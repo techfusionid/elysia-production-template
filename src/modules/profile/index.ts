@@ -9,7 +9,7 @@
  * Can be modified or removed for your application.
  */
 import { Elysia, t } from "elysia";
-import { authMiddleware, isAuthenticated } from "@common/middleware/auth-guard";
+import { authGuard, authMiddleware } from "@common/middleware/auth-guard";
 import * as service from "./service";
 import { updateProfileSchema, profileResponseSchema } from "./schemas";
 
@@ -51,14 +51,16 @@ export const profileModule = new Elysia({ prefix: "/api" })
 	)
 
 	// PROTECTED: Scoped guard for authenticated endpoints
-	.guard({ beforeHandle: [isAuthenticated] }, (app) =>
+	.guard(authGuard(), (app) =>
 		app
 			// Get my profile
 			.get(
 				"/profile/me",
 				async (ctx) => {
-					const { user } = ctx as typeof ctx & { user: any };
+					const user = (ctx as any).user;
+
 					const profile = await service.getMyProfile(user.id);
+
 					if (!profile) {
 						return {
 							id: user.id,
@@ -69,8 +71,10 @@ export const profileModule = new Elysia({ prefix: "/api" })
 							location: null,
 						};
 					}
+
 					return profile;
 				},
+
 				{
 					response: profileResponseSchema,
 					detail: {
@@ -85,7 +89,9 @@ export const profileModule = new Elysia({ prefix: "/api" })
 			.patch(
 				"/profile/me",
 				async (ctx) => {
-					const { body, user } = ctx as typeof ctx & { user: any };
+					const { body } = ctx;
+					const user = (ctx as any).user;
+
 					const profile = await service.updateProfile(user.id, body);
 
 					return (

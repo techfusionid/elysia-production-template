@@ -68,6 +68,7 @@ const EnvSchema = Type.Object({
 	// CORS
 	CORS_ORIGIN: Type.String({
 		description: "Allowed CORS origins (comma-separated)",
+		default: ["http://localhost:3000"],
 	}),
 });
 

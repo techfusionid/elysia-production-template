@@ -58,13 +58,9 @@ export async function updateProfile(
 }
 
 export async function getStats() {
-	const [result] = await db
-		.select({
-			totalUsers: db.$count(user.id),
-		})
-		.from(user);
+	const result = await db.select().from(user);
 
 	return {
-		totalUsers: result?.totalUsers ?? 0,
+		totalUsers: result.length,
 	};
 }

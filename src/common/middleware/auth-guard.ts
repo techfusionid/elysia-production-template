@@ -1,9 +1,7 @@
 import { Elysia } from "elysia";
 import { auth } from "@common/config/auth";
 
-/**
- * Adds optional session/user to context via Better Auth
- */
+/** Inject optional session & user */
 export const authMiddleware = new Elysia({ name: "auth-middleware" }).derive(
 	async ({ headers }) => {
 		const session = await auth.api.getSession({ headers });
@@ -15,39 +13,41 @@ export const authMiddleware = new Elysia({ name: "auth-middleware" }).derive(
 	}
 );
 
-/**
- * Module-level auth guard - protects all routes in the module
- * Usage: new Elysia().use(requireAuth).get(...)
- */
+/** Protect all routes in a module */
+type RequireAuthContext = {
+	user?: unknown | null;
+	set: {
+		status?: unknown;
+	};
+};
+
 export const requireAuth = new Elysia({ name: "require-auth" })
 	.use(authMiddleware)
-	.onBeforeHandle(async (context) => {
-		const { user, set } = context as typeof context & { user: any };
-
-		if (!user) {
-			set.status = 401;
+	.onBeforeHandle((ctx: RequireAuthContext) => {
+		if (!ctx.user) {
+			ctx.set.status = 401;
 			return { error: "Unauthorized" };
 		}
 	});
 
 /**
- * Reusable guard for scoped protection
- * Requires authMiddleware
- * Usage: .use(authMiddleware).guard({ beforeHandle: [isAuthenticated] }, ...)
+ * Scoped auth guard (reusable)
+ *
+ * Usage:
+ * .use(authMiddleware)
+ * .guard(authGuard(), ...)
  */
-export async function isAuthenticated(ctx: any) {
-	if (!ctx.user) {
-		ctx.set.status = 401;
-		return { error: "Unauthorized" };
-	}
-}
-
-// Example: Compose multiple guards
-// .guard({ beforeHandle: [isAuthenticated, isAdmin] }, ...)
-//
-// export async function isAdmin(ctx: any) {
-// 	if (ctx.user?.role !== "admin") {
-// 		ctx.set.status = 403;
-// 		return { error: "Forbidden" };
-// 	}
-// }
+type GuardContext = {
+	user?: unknown | null;
+	set: { status?: unknown };
+};
+export const authGuard = () => ({
+	beforeHandle: [
+		(ctx: GuardContext) => {
+			if (!ctx.user) {
+				ctx.set.status = 401;
+				return { error: "Unauthorized" };
+			}
+		},
+	],
+});
