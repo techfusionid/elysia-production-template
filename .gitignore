@@ -95,5 +95,5 @@ package-lock.json
 yarn.lock
 pnpm-lock.yaml
 
-# Planning documents (remove this if you want to keep plan/ in git)
 plan/
+*test-api*

@@ -1,15 +1,13 @@
-FROM oven/bun:1.1-alpine AS base
+FROM oven/bun:1.3-slim AS base
 WORKDIR /app
 
 FROM base AS install
-COPY package.json bun.lockb ./
+COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile --production
 
-FROM base AS dev-install
-COPY package.json bun.lockb ./
+FROM base AS build
+COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
-
-FROM dev-install AS build
 COPY . .
 RUN bun run build
 
@@ -21,16 +19,13 @@ COPY --from=build /app/dist ./dist
 COPY --from=build /app/package.json ./
 COPY --from=build /app/drizzle ./drizzle
 
-RUN addgroup -g 1001 -S bunuser && \
-    adduser -S bunuser -u 1001 && \
-    chown -R bunuser:bunuser /app
-
-USER bunuser
+# Run as non-root user provided by the Bun image
+USER bun
 
 EXPOSE 3000
 
-# Health check
+# Application health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/health || exit 1
+  CMD bun -e "fetch('http://localhost:3000/health').then(r => r.ok ? process.exit(0) : process.exit(1))"
 
-CMD ["bun", "run", "start"]
+CMD ["bun", "run", "dist/index.js"]

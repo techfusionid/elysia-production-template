@@ -4,16 +4,16 @@ import { logger } from "@common/logger";
 import { closeDatabase } from "@common/db";
 
 /**
- * Application entry point.
- *
- * Starts the HTTP server and handles graceful shutdown
+ * Application entry point
+ * Starts HTTP server and handles graceful shutdown
  */
 
 const server = app.listen({
 	hostname: env.HOST,
-	port: Number(env.PORT),
+	port: env.PORT,
 });
 
+// Startup logs
 logger.info(`[SERVER] Running at http://${env.HOST}:${env.PORT}`);
 logger.info(
 	`[API] Documentation available at http://${env.HOST}:${env.PORT}/swagger`
