@@ -1,12 +1,11 @@
 import { pgTable, text, timestamp, boolean } from "drizzle-orm/pg-core";
 
 /**
- * Better Auth required tables
+ * Better Auth required tables.
  *
- * These tables are required by Better Auth for authentication
- * and session management.
- *
+ * These tables are required for authentication and session management.
  * Do not remove or rename existing columns used by Better Auth.
+ *
  * You may extend these tables with additional fields if needed.
  *
  * @see https://better-auth.com

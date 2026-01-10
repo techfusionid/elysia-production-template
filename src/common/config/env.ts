@@ -1,41 +1,48 @@
-import { Type, type Static } from '@sinclair/typebox';
-import { Value } from '@sinclair/typebox/value';
+import { Type, type Static } from "@sinclair/typebox";
+import { Value } from "@sinclair/typebox/value";
 
 /**
- * Environment configuration schema
- * Using TypeBox for runtime validation and type inference
+ * environment (env) configuration.
+ *
+ * With TypeBox, defines and validates all required environment variables
+ * at startup to fail fast on misconfiguration.
  */
+
 const EnvSchema = Type.Object({
 	// Application
 	NODE_ENV: Type.Union(
-		[Type.Literal('development'), Type.Literal('production'), Type.Literal('test')],
+		[
+			Type.Literal("development"),
+			Type.Literal("production"),
+			Type.Literal("test"),
+		],
 		{
-			default: 'development',
-		},
+			default: "development",
+		}
 	),
 	PORT: Type.String({
-		default: '3000',
-		pattern: '^[0-9]+$',
+		default: "3000",
+		pattern: "^[0-9]+$",
 	}),
 	HOST: Type.String({
-		default: '0.0.0.0',
+		default: "0.0.0.0",
 	}),
 
 	// Database
 	DATABASE_URL: Type.String({
-		format: 'uri',
-		description: 'PostgreSQL connection string',
+		description: "PostgreSQL connection string",
+		pattern: "^postgresql://.+",
 	}),
 
 	// Better Auth
 	BETTER_AUTH_SECRET: Type.String({
 		minLength: 32,
-		description: 'Secret key for Better Auth (min 32 characters)',
+		description: "Secret key for Better Auth (min 32 characters)",
 	}),
 	BETTER_AUTH_URL: Type.String({
-		format: 'uri',
-		default: 'http://localhost:3000',
-		description: 'Base URL for authentication callbacks',
+		default: "http://localhost:3000",
+		description: "Base URL for authentication callbacks",
+		pattern: "^https?://.+",
 	}),
 
 	// Optional: OAuth providers (uncomment if needed)
@@ -47,22 +54,22 @@ const EnvSchema = Type.Object({
 	// Logging
 	LOG_LEVEL: Type.Union(
 		[
-			Type.Literal('fatal'),
-			Type.Literal('error'),
-			Type.Literal('warn'),
-			Type.Literal('info'),
-			Type.Literal('debug'),
-			Type.Literal('trace'),
+			Type.Literal("fatal"),
+			Type.Literal("error"),
+			Type.Literal("warn"),
+			Type.Literal("info"),
+			Type.Literal("debug"),
+			Type.Literal("trace"),
 		],
 		{
-			default: 'info',
-		},
+			default: "info",
+		}
 	),
 
 	// CORS
 	CORS_ORIGIN: Type.String({
-		default: '*',
-		description: 'Allowed CORS origins (comma-separated for multiple)',
+		default: "*",
+		description: "Allowed CORS origins (comma-separated for multiple)",
 	}),
 });
 
@@ -74,14 +81,14 @@ export type Env = Static<typeof EnvSchema>;
  */
 export function validateEnv(): Env {
 	const rawEnv = {
-		NODE_ENV: process.env.NODE_ENV || 'development',
-		PORT: process.env.PORT || '3000',
-		HOST: process.env.HOST || '0.0.0.0',
-		DATABASE_URL: process.env.DATABASE_URL,
-		BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
-		BETTER_AUTH_URL: process.env.BETTER_AUTH_URL || 'http://localhost:3000',
-		LOG_LEVEL: process.env.LOG_LEVEL || 'info',
-		CORS_ORIGIN: process.env.CORS_ORIGIN || '*',
+		NODE_ENV: process.env["NODE_ENV"] || "development",
+		PORT: process.env["PORT"] || "3000",
+		HOST: process.env["HOST"] || "0.0.0.0",
+		DATABASE_URL: process.env["DATABASE_URL"],
+		BETTER_AUTH_SECRET: process.env["BETTER_AUTH_SECRET"],
+		BETTER_AUTH_URL: process.env["BETTER_AUTH_URL"] || "http://localhost:3000",
+		LOG_LEVEL: process.env["LOG_LEVEL"] || "info",
+		CORS_ORIGIN: process.env["CORS_ORIGIN"] || "*",
 	};
 
 	// Validate against schema
@@ -89,7 +96,7 @@ export function validateEnv(): Env {
 		const errors = [...Value.Errors(EnvSchema, rawEnv)];
 		const errorMessages = errors
 			.map((error) => `  - ${error.path}: ${error.message}`)
-			.join('\n');
+			.join("\n");
 
 		throw new Error(`❌ Environment validation failed:\n${errorMessages}`);
 	}
