@@ -1,0 +1,99 @@
+# Bun
+node_modules/
+bun.lockb
+*.bun
+dist/
+build/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pino-debug.log*
+lerna-debug.log*
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDEs
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Testing
+coverage/
+.nyc_output/
+*.lcov
+
+# Database
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+postgres-data/
+pgdata/
+
+# Drizzle
+drizzle/meta/
+.drizzle/
+
+# Docker
+docker-data/
+*.pid
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Production builds
+.output/
+.vercel/
+.netlify/
+
+# Debug
+*.tsbuildinfo
+
+# Secrets & credentials
+*.key
+*.pem
+*.p12
+*.pfx
+credentials.json
+service-account.json
+
+# Backup files
+*.backup
+*.bak
+*.old
+
+# Lock files (keep bun.lockb out of git for template)
+# Users will generate their own
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Planning documents (remove this if you want to keep plan/ in git)
+plan/
