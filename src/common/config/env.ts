@@ -2,10 +2,10 @@ import { Type, type Static } from "@sinclair/typebox";
 import { Value } from "@sinclair/typebox/value";
 
 /**
- * environment (env) configuration.
+ * Environment configuration and validation.
  *
- * With TypeBox, defines and validates all required environment variables
- * at startup to fail fast on misconfiguration.
+ * Validates all required environment variables at startup
+ * to fail fast on misconfiguration.
  */
 
 const EnvSchema = Type.Object({
@@ -20,9 +20,8 @@ const EnvSchema = Type.Object({
 			default: "development",
 		}
 	),
-	PORT: Type.String({
-		default: "3000",
-		pattern: "^[0-9]+$",
+	PORT: Type.Number({
+		default: 3000,
 	}),
 	HOST: Type.String({
 		default: "0.0.0.0",
@@ -68,8 +67,7 @@ const EnvSchema = Type.Object({
 
 	// CORS
 	CORS_ORIGIN: Type.String({
-		default: "*",
-		description: "Allowed CORS origins (comma-separated for multiple)",
+		description: "Allowed CORS origins (comma-separated)",
 	}),
 });
 
@@ -82,13 +80,13 @@ export type Env = Static<typeof EnvSchema>;
 export function validateEnv(): Env {
 	const rawEnv = {
 		NODE_ENV: process.env["NODE_ENV"] || "development",
-		PORT: process.env["PORT"] || "3000",
+		PORT: Number(process.env["PORT"] ?? 3000),
 		HOST: process.env["HOST"] || "0.0.0.0",
 		DATABASE_URL: process.env["DATABASE_URL"],
 		BETTER_AUTH_SECRET: process.env["BETTER_AUTH_SECRET"],
 		BETTER_AUTH_URL: process.env["BETTER_AUTH_URL"] || "http://localhost:3000",
 		LOG_LEVEL: process.env["LOG_LEVEL"] || "info",
-		CORS_ORIGIN: process.env["CORS_ORIGIN"] || "*",
+		CORS_ORIGIN: process.env["CORS_ORIGIN"],
 	};
 
 	// Validate against schema
@@ -98,7 +96,7 @@ export function validateEnv(): Env {
 			.map((error) => `  - ${error.path}: ${error.message}`)
 			.join("\n");
 
-		throw new Error(`❌ Environment validation failed:\n${errorMessages}`);
+		throw new Error(`[ERROR] Environment validation failed:\n${errorMessages}`);
 	}
 
 	return Value.Decode(EnvSchema, rawEnv);

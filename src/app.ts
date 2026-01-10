@@ -5,7 +5,7 @@ import { env } from "@common/config/env";
 import { logger } from "@common/logger";
 import { authModule } from "@modules/auth";
 import { healthModule } from "@modules/health";
-import { exampleModule } from "@modules/_example";
+import { profileModule } from "@modules/profile";
 
 /**
  * Application composition root.
@@ -22,18 +22,25 @@ export const app = new Elysia()
 		})
 	)
 	.use(
-		swagger({
+swagger({
 			documentation: {
 				info: {
 					title: "Elysia Production API",
 					version: "1.0.0",
 					description:
-						"Production-ready Elysia.js backend with auth, database, and best practices",
+						"Production-ready Elysia.js backend with auth, database, and best practices.\n\n" +
+						"**Authentication Endpoints** (via Better Auth):\n" +
+						"- POST `/api/auth/sign-up/email` - Register with email\n" +
+						"- POST `/api/auth/sign-in/email` - Login with email\n" +
+						"- POST `/api/auth/sign-out` - Logout\n" +
+						"- GET `/api/auth/get-session` - Get current session\n\n" +
+						"Full Better Auth docs: https://better-auth.com",
 				},
 				tags: [
 					{ name: "Health", description: "Health check endpoints" },
-					{ name: "Auth", description: "Authentication endpoints" },
-					{ name: "Tasks", description: "Example CRUD operations" },
+					{ name: "Auth", description: "Authentication endpoints (Better Auth)" },
+					{ name: "Public", description: "Public endpoints (no auth)" },
+					{ name: "Profiles", description: "User profile endpoints" },
 				],
 			},
 			scalarConfig: {
@@ -70,4 +77,4 @@ export const app = new Elysia()
 	// Feature Modules
 	.use(healthModule)
 	.use(authModule)
-	.use(exampleModule); // Example feature module (can be replaced, removed, or extended)
+	.use(profileModule);

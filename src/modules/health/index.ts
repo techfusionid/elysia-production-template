@@ -18,7 +18,7 @@ export const healthModule = new Elysia({ prefix: '/health' }).get(
 		const responseTime = Date.now() - startTime;
 
 		return {
-			status: dbStatus === 'healthy' ? 'ok' : 'degraded',
+			status: (dbStatus === 'healthy' ? 'ok' : 'degraded') as 'ok' | 'degraded',
 			timestamp: new Date().toISOString(),
 			uptime: process.uptime(),
 			database: dbStatus,
