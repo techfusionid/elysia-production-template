@@ -2,14 +2,12 @@ import { Elysia } from 'elysia';
 import { auth } from '@common/config/auth';
 
 /**
- * Auth middleware - injects session and user into context
- * Use .derive() to make session data available to all routes
+ * Auth middleware that derives session and user from Better Auth
+ * All routes using this middleware will have session and user in context
  */
 export const authMiddleware = new Elysia({ name: 'auth-middleware' }).derive(
 	async ({ headers }) => {
-		const session = await auth.api.getSession({
-			headers,
-		});
+		const session = await auth.api.getSession({ headers });
 
 		return {
 			session: session?.session ?? null,
@@ -19,14 +17,17 @@ export const authMiddleware = new Elysia({ name: 'auth-middleware' }).derive(
 );
 
 /**
- * Protected route guard
- * Throws 401 if user is not authenticated
+ * Protected route guard - requires authentication
+ * Returns 401 if user is not logged in
  */
 export const requireAuth = new Elysia({ name: 'require-auth' })
 	.use(authMiddleware)
-	.derive(({ user }) => {
+	.onBeforeHandle(async (context) => {
+		// Type assertion needed due to Elysia derive type inference limitations
+		const { user, set } = context as typeof context & { user: any };
+
 		if (!user) {
-			throw new Error('Unauthorized');
+			set.status = 401;
+			return { error: 'Unauthorized' };
 		}
-		return { user };
 	});
