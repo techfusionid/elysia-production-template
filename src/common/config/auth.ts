@@ -1,11 +1,16 @@
-import { betterAuth } from 'better-auth';
-import { drizzleAdapter } from 'better-auth/adapters/drizzle';
-import { db } from '@common/db';
-import { env } from './env';
+import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { db } from "@common/db";
+import { env } from "./env";
 
+/**
+ * Better Auth configuration
+ * Defines authentication methods, session behavior, and database integration
+ * Review security defaults before production deployment
+ */
 export const auth = betterAuth({
 	database: drizzleAdapter(db, {
-		provider: 'pg',
+		provider: "pg",
 	}),
 	emailAndPassword: {
 		enabled: true,
