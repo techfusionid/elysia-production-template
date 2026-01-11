@@ -3,6 +3,7 @@ import { swagger } from "@elysiajs/swagger";
 import { cors } from "@elysiajs/cors";
 import { env } from "@common/config/env";
 import { logger } from "@common/logger";
+import { globalRateLimit } from "@common/config/rate-limit";
 import { authModule } from "@modules/auth";
 import { healthModule } from "@modules/health";
 import { postsModule } from "@modules/posts";
@@ -15,6 +16,7 @@ import { postsModule } from "@modules/posts";
  */
 
 export const app = new Elysia()
+	.use(globalRateLimit)
 	.use(
 		cors({
 			origin: env.CORS_ORIGIN.split(",").map((o) => o.trim()),
@@ -22,7 +24,7 @@ export const app = new Elysia()
 		})
 	)
 	.use(
-swagger({
+		swagger({
 			documentation: {
 				info: {
 					title: "Elysia Production API",
@@ -38,8 +40,14 @@ swagger({
 				},
 				tags: [
 					{ name: "Health", description: "Health check endpoints" },
-					{ name: "Auth", description: "Authentication endpoints (Better Auth)" },
-					{ name: "Posts", description: "Posts CRUD endpoints (reference implementation)" },
+					{
+						name: "Auth",
+						description: "Authentication endpoints (Better Auth)",
+					},
+					{
+						name: "Posts",
+						description: "Posts CRUD endpoints (reference implementation)",
+					},
 				],
 			},
 			scalarConfig: {
@@ -53,7 +61,10 @@ swagger({
 		logger.error({
 			code,
 			error: errorMessage,
-			stack: env.NODE_ENV === "development" && error instanceof Error ? error.stack : undefined,
+			stack:
+				env.NODE_ENV === "development" && error instanceof Error
+					? error.stack
+					: undefined,
 		});
 
 		if (code === "NOT_FOUND") {

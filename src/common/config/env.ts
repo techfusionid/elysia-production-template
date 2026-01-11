@@ -70,6 +70,24 @@ const EnvSchema = Type.Object({
 		description: "Allowed CORS origins (comma-separated)",
 		default: ["http://localhost:3000"],
 	}),
+
+	// Rate Limiting
+	RATE_LIMIT_WINDOW_MS: Type.Optional(Type.Number({
+		description: "Global rate limit window in milliseconds",
+		default: 60000,
+	})),
+	RATE_LIMIT_MAX: Type.Optional(Type.Number({
+		description: "Max requests per window",
+		default: 100,
+	})),
+	AUTH_RATE_LIMIT_WINDOW_MS: Type.Optional(Type.Number({
+		description: "Auth rate limit window in milliseconds",
+		default: 60000,
+	})),
+	AUTH_RATE_LIMIT_MAX: Type.Optional(Type.Number({
+		description: "Max auth requests per window",
+		default: 10,
+	})),
 });
 
 export type Env = Static<typeof EnvSchema>;
@@ -88,6 +106,18 @@ export function validateEnv(): Env {
 		BETTER_AUTH_URL: process.env["BETTER_AUTH_URL"] || "http://localhost:3000",
 		LOG_LEVEL: process.env["LOG_LEVEL"] || "info",
 		CORS_ORIGIN: process.env["CORS_ORIGIN"],
+		RATE_LIMIT_WINDOW_MS: process.env["RATE_LIMIT_WINDOW_MS"]
+			? Number(process.env["RATE_LIMIT_WINDOW_MS"])
+			: undefined,
+		RATE_LIMIT_MAX: process.env["RATE_LIMIT_MAX"]
+			? Number(process.env["RATE_LIMIT_MAX"])
+			: undefined,
+		AUTH_RATE_LIMIT_WINDOW_MS: process.env["AUTH_RATE_LIMIT_WINDOW_MS"]
+			? Number(process.env["AUTH_RATE_LIMIT_WINDOW_MS"])
+			: undefined,
+		AUTH_RATE_LIMIT_MAX: process.env["AUTH_RATE_LIMIT_MAX"]
+			? Number(process.env["AUTH_RATE_LIMIT_MAX"])
+			: undefined,
 	};
 
 	// Validate against schema
