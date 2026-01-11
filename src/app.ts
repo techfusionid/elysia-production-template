@@ -49,7 +49,12 @@ swagger({
 	)
 	.onError(({ code, error, set }) => {
 		const errorMessage = error instanceof Error ? error.message : String(error);
-		logger.error({ code, error: errorMessage });
+
+		logger.error({
+			code,
+			error: errorMessage,
+			stack: env.NODE_ENV === "development" && error instanceof Error ? error.stack : undefined,
+		});
 
 		if (code === "NOT_FOUND") {
 			set.status = 404;
@@ -67,11 +72,26 @@ swagger({
 			message: env.NODE_ENV === "development" ? errorMessage : undefined,
 		};
 	})
-	.onRequest(({ request }) => {
-		logger.info({
+	.onRequest(({ store }: any) => {
+		store.startTime = Date.now();
+	})
+	.onAfterHandle(({ request, set, store }: any) => {
+		const duration = Date.now() - (store.startTime || 0);
+		const status = set.status || 200;
+		const logData = {
 			method: request.method,
 			url: request.url,
-		});
+			status,
+			duration: `${duration}ms`,
+		};
+
+		if (status >= 500) {
+			logger.error(logData);
+		} else if (status >= 400) {
+			logger.warn(logData);
+		} else {
+			logger.info(logData);
+		}
 	})
 	// Feature Modules
 	.use(healthModule)
