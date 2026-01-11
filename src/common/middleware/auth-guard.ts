@@ -1,53 +1,39 @@
 import { Elysia } from "elysia";
 import { auth } from "@common/config/auth";
 
-/** Inject optional session & user */
-export const authMiddleware = new Elysia({ name: "auth-middleware" }).derive(
-	async ({ headers }) => {
-		const session = await auth.api.getSession({ headers });
-
-		return {
-			session: session?.session ?? null,
-			user: session?.user ?? null,
-		};
-	}
-);
-
-/** Protect all routes in a module */
-type RequireAuthContext = {
-	user?: unknown | null;
-	set: {
-		status?: unknown;
-	};
-};
-
-export const requireAuth = new Elysia({ name: "require-auth" })
-	.use(authMiddleware)
-	.onBeforeHandle((ctx: RequireAuthContext) => {
-		if (!ctx.user) {
-			ctx.set.status = 401;
-			return { error: "Unauthorized" };
-		}
-	});
-
 /**
- * Scoped auth guard (reusable)
- *
- * Usage:
- * .use(authMiddleware)
- * .guard(authGuard(), ...)
+ * Derives user and session from Better Auth
+ * Call this in your module before defining routes
  */
-type GuardContext = {
-	user?: unknown | null;
-	set: { status?: unknown };
-};
-export const authGuard = () => ({
-	beforeHandle: [
-		(ctx: GuardContext) => {
-			if (!ctx.user) {
-				ctx.set.status = 401;
-				return { error: "Unauthorized" };
-			}
-		},
-	],
-});
+export function withAuth<T extends Elysia<any, any, any, any, any, any, any>>(
+	app: T
+) {
+	return app
+		.derive(async ({ request }) => {
+			const session = await auth.api.getSession({
+				headers: request.headers,
+			});
+
+			return {
+				user: session?.user ?? null,
+				session: session?.session ?? null,
+			};
+		})
+		.macro({
+			auth(enabled: boolean) {
+				if (!enabled) return;
+
+				return {
+					beforeHandle: async ({ user, set }: any) => {
+						if (!user) {
+							set.status = 401;
+							return {
+								error: "Unauthorized",
+								message: "Please login first",
+							};
+						}
+					},
+				};
+			},
+		});
+}

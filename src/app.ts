@@ -5,7 +5,7 @@ import { env } from "@common/config/env";
 import { logger } from "@common/logger";
 import { authModule } from "@modules/auth";
 import { healthModule } from "@modules/health";
-import { profileModule } from "@modules/profile";
+import { postsModule } from "@modules/posts";
 
 /**
  * Application composition root.
@@ -39,8 +39,7 @@ swagger({
 				tags: [
 					{ name: "Health", description: "Health check endpoints" },
 					{ name: "Auth", description: "Authentication endpoints (Better Auth)" },
-					{ name: "Public", description: "Public endpoints (no auth)" },
-					{ name: "Profiles", description: "User profile endpoints" },
+					{ name: "Posts", description: "Posts CRUD endpoints (reference implementation)" },
 				],
 			},
 			scalarConfig: {
@@ -77,4 +76,4 @@ swagger({
 	// Feature Modules
 	.use(healthModule)
 	.use(authModule)
-	.use(profileModule);
+	.use(postsModule);

@@ -1,5 +1,5 @@
 import { db } from "@common/db";
-import { user, userProfiles } from "@common/db/schema";
+import { user, posts } from "@common/db/schema";
 import { logger } from "@common/logger";
 
 /**
@@ -36,40 +36,40 @@ async function seed() {
 			.onConflictDoNothing()
 			.returning();
 
-		if (user1) {
-			logger.info(`[SEED] Created user: ${user1.email}`);
+		if (user1 && user2) {
+			logger.info(`[SEED] Created users: ${user1.email}, ${user2.email}`);
 
-			// Create profile for user1
+			// Create sample posts
+			logger.info("[SEED] Creating sample posts...");
 			await db
-				.insert(userProfiles)
-				.values({
-					userId: user1.id,
-					bio: "Full-stack developer passionate about building great products",
-					website: "https://alice.dev",
-					location: "San Francisco, CA",
-				})
+				.insert(posts)
+				.values([
+					{
+						title: "Getting Started with Elysia",
+						content: "Elysia is a fast and lightweight TypeScript framework built on top of Bun. It provides an intuitive API and excellent TypeScript support.",
+						authorId: user1.id,
+					},
+					{
+						title: "Understanding Better Auth",
+						content: "Better Auth is a modern authentication library that provides secure, cookie-based authentication out of the box. It handles sessions, CSRF protection, and more.",
+						authorId: user1.id,
+					},
+					{
+						title: "Database Design Tips",
+						content: "When designing your database schema, always consider relationships, indexing, and normalization. Use foreign keys to maintain referential integrity.",
+						authorId: user2.id,
+					},
+					{
+						title: "TypeScript Best Practices",
+						content: "Use strict mode, leverage type inference, and prefer interfaces over type aliases for object shapes. Always type your function parameters and return values.",
+						authorId: user2.id,
+					},
+				])
 				.onConflictDoNothing();
 
-			logger.info("[SEED] Created profile for Alice");
+			logger.info("[SEED] Created sample posts");
 		} else {
-			logger.info("[SEED] Sample users already exist");
-		}
-
-		if (user2) {
-			logger.info(`[SEED] Created user: ${user2.email}`);
-
-			// Create profile for user2
-			await db
-				.insert(userProfiles)
-				.values({
-					userId: user2.id,
-					bio: "Designer and creative thinker",
-					website: "https://bobdesigns.com",
-					location: "New York, NY",
-				})
-				.onConflictDoNothing();
-
-			logger.info("[SEED] Created profile for Bob");
+			logger.info("[SEED] Sample data already exists");
 		}
 
 		logger.info("[SEED] Database seeding completed successfully");

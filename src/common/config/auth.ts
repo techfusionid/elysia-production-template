@@ -23,4 +23,14 @@ export const auth = betterAuth({
 	},
 	secret: env.BETTER_AUTH_SECRET,
 	baseURL: env.BETTER_AUTH_URL,
+	advanced: {
+		cookiePrefix: "auth",
+		useSecureCookies: env.NODE_ENV === "production",
+		defaultCookieAttributes: {
+			sameSite: "lax",
+			httpOnly: true,
+			secure: env.NODE_ENV === "production",
+			path: "/",
+		},
+	},
 });

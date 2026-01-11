@@ -2,9 +2,8 @@
  * Database Schema Exports
  *
  * - auth.ts: Better Auth required tables (DO NOT modify)
- * - profile.ts: User profile tables (reference implementation)
- * - (add more here)
+ * - posts.ts: Posts CRUD reference implementation
  */
 
 export * from "./auth";
-export * from "./profile";
+export * from "./posts";
