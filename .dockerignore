@@ -1,0 +1,39 @@
+# Dependencies
+node_modules
+
+# Development
+.env
+.env.*
+!.env.example
+
+# Build artifacts
+dist
+*.log
+*.tsbuildinfo
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Documentation
+README.md
+plan
+
+# CI/CD
+.github
+
+# Tests
+*.test.ts
+*.spec.ts
+__tests__
+coverage
+
+# OS
+.DS_Store
+Thumbs.db
