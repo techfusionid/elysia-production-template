@@ -66,28 +66,36 @@ const EnvSchema = Type.Object({
 	),
 
 	// CORS
-	CORS_ORIGIN: Type.String({
+	CORS_ORIGIN: Type.Array(Type.String(), {
 		description: "Allowed CORS origins (comma-separated)",
 		default: ["http://localhost:3000"],
 	}),
 
 	// Rate Limiting
-	RATE_LIMIT_WINDOW_MS: Type.Optional(Type.Number({
-		description: "Global rate limit window in milliseconds",
-		default: 60000,
-	})),
-	RATE_LIMIT_MAX: Type.Optional(Type.Number({
-		description: "Max requests per window",
-		default: 100,
-	})),
-	AUTH_RATE_LIMIT_WINDOW_MS: Type.Optional(Type.Number({
-		description: "Auth rate limit window in milliseconds",
-		default: 60000,
-	})),
-	AUTH_RATE_LIMIT_MAX: Type.Optional(Type.Number({
-		description: "Max auth requests per window",
-		default: 10,
-	})),
+	RATE_LIMIT_WINDOW_MS: Type.Optional(
+		Type.Number({
+			description: "Global rate limit window in milliseconds",
+			default: 60000,
+		})
+	),
+	RATE_LIMIT_MAX: Type.Optional(
+		Type.Number({
+			description: "Max requests per window",
+			default: 100,
+		})
+	),
+	AUTH_RATE_LIMIT_WINDOW_MS: Type.Optional(
+		Type.Number({
+			description: "Auth rate limit window in milliseconds",
+			default: 60000,
+		})
+	),
+	AUTH_RATE_LIMIT_MAX: Type.Optional(
+		Type.Number({
+			description: "Max auth requests per window",
+			default: 10,
+		})
+	),
 });
 
 export type Env = Static<typeof EnvSchema>;
@@ -97,6 +105,11 @@ export type Env = Static<typeof EnvSchema>;
  * Throws error if validation fails
  */
 export function validateEnv(): Env {
+	const rawCorsOrigin = process.env["CORS_ORIGIN"];
+	const corsOriginArray = rawCorsOrigin
+		? rawCorsOrigin.split(",").map((origin) => origin.trim())
+		: ["http://localhost:3000"]; // Default fallback
+
 	const rawEnv = {
 		NODE_ENV: process.env["NODE_ENV"] || "development",
 		PORT: Number(process.env["PORT"] ?? 3000),
@@ -105,7 +118,7 @@ export function validateEnv(): Env {
 		BETTER_AUTH_SECRET: process.env["BETTER_AUTH_SECRET"],
 		BETTER_AUTH_URL: process.env["BETTER_AUTH_URL"] || "http://localhost:3000",
 		LOG_LEVEL: process.env["LOG_LEVEL"] || "info",
-		CORS_ORIGIN: process.env["CORS_ORIGIN"],
+		CORS_ORIGIN: corsOriginArray,
 		RATE_LIMIT_WINDOW_MS: process.env["RATE_LIMIT_WINDOW_MS"]
 			? Number(process.env["RATE_LIMIT_WINDOW_MS"])
 			: undefined,

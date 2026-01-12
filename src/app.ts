@@ -4,6 +4,7 @@ import { cors } from "@elysiajs/cors";
 import { env } from "@common/config/env";
 import { logger } from "@common/logger";
 import { globalRateLimit } from "@common/config/rate-limit";
+import { requestLogger } from "@common/middleware/request-logger";
 import { authModule } from "@modules/auth";
 import { healthModule } from "@modules/health";
 import { postsModule } from "@modules/posts";
@@ -13,16 +14,19 @@ import { postsModule } from "@modules/posts";
  *
  * Registers global middleware, OpenAPI/Scalar documentation,
  * error handling, and feature modules.
+ * * @see https://elysiajs.com/concepts/plugin.html
  */
 
 export const app = new Elysia()
+	// --- Infrastructure & Security ---
 	.use(globalRateLimit)
 	.use(
 		cors({
-			origin: env.CORS_ORIGIN.split(",").map((o) => o.trim()),
+			origin: env.CORS_ORIGIN,
 			credentials: true,
 		})
 	)
+	// ---  API Documentation (open at /docs) ---
 	.use(
 		swagger({
 			path: "/docs",
@@ -84,32 +88,12 @@ export const app = new Elysia()
 			message: env.NODE_ENV === "development" ? errorMessage : undefined,
 		};
 	})
-	.onRequest(({ store }: any) => {
-		store.startTime = Date.now();
-	})
-	.onAfterResponse(({ request, set, store, response }: any) => {
-		const duration = Date.now() - (store.startTime || 0);
-		const actualStatus = response?.status ?? set.status ?? 200;
+	.use(requestLogger)
 
-		// Skip 429s - already logged by rate limiter with IP details
-		if (actualStatus === 429) return;
-
-		const logData: Record<string, any> = {
-			method: request.method,
-			url: request.url,
-			status: actualStatus,
-			duration: `${duration}ms`,
-		};
-
-		if (actualStatus >= 500) {
-			logger.error(logData);
-		} else if (actualStatus >= 400) {
-			logger.warn(logData);
-		} else {
-			logger.info(logData);
-		}
-	})
-	// Feature Modules
+	/**
+	 * Feature Modules
+	 * Register your business logic modules here.
+	 */
 	.use(healthModule)
 	.use(authModule)
 	.use(postsModule);
