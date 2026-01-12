@@ -86,19 +86,23 @@ export const app = new Elysia()
 	.onRequest(({ store }: any) => {
 		store.startTime = Date.now();
 	})
-	.onAfterHandle(({ request, set, store }: any) => {
+	.onAfterResponse(({ request, set, store, response }: any) => {
 		const duration = Date.now() - (store.startTime || 0);
-		const status = set.status || 200;
-		const logData = {
+		const actualStatus = response?.status ?? set.status ?? 200;
+
+		// Skip 429s - already logged by rate limiter with IP details
+		if (actualStatus === 429) return;
+
+		const logData: Record<string, any> = {
 			method: request.method,
 			url: request.url,
-			status,
+			status: actualStatus,
 			duration: `${duration}ms`,
 		};
 
-		if (status >= 500) {
+		if (actualStatus >= 500) {
 			logger.error(logData);
-		} else if (status >= 400) {
+		} else if (actualStatus >= 400) {
 			logger.warn(logData);
 		} else {
 			logger.info(logData);
