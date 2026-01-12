@@ -25,6 +25,7 @@ export const app = new Elysia()
 	)
 	.use(
 		swagger({
+			path: "/docs",
 			documentation: {
 				info: {
 					title: "Elysia Production API",
