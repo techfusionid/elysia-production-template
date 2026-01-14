@@ -2,12 +2,11 @@ import { Elysia } from "elysia";
 import { swagger } from "@elysiajs/swagger";
 import { cors } from "@elysiajs/cors";
 import { env } from "@common/config/env";
-import { logger } from "@common/logger";
-import { globalRateLimit } from "@common/config/rate-limit";
-import { requestLogger } from "@common/middleware/request-logger";
-import { authModule } from "@modules/auth";
 import { healthModule } from "@modules/health";
 import { postsModule } from "@modules/posts";
+import { authModule } from "@modules/auth";
+import { appLogger } from "./common/logger";
+import { requestLogger } from "./common/middleware/request-logger";
 
 /**
  * Application composition root.
@@ -18,9 +17,7 @@ import { postsModule } from "@modules/posts";
  */
 
 export const app = new Elysia()
-	// --- Infrastructure & Security ---
-	// TODO: Re-enable rate limiting with elysia-ip plugin to avoid body consumption conflicts
-	// .use(globalRateLimit)
+	.use(requestLogger)
 	.use(
 		cors({
 			origin: env.CORS_ORIGIN,
@@ -64,7 +61,7 @@ export const app = new Elysia()
 	.onError(({ code, error, set }) => {
 		const errorMessage = error instanceof Error ? error.message : String(error);
 
-		logger.error({
+		appLogger.error({
 			code,
 			error: errorMessage,
 			stack:
@@ -80,7 +77,18 @@ export const app = new Elysia()
 
 		if (code === "VALIDATION") {
 			set.status = 400;
-			return { error: "Validation error", message: errorMessage };
+
+			let parsedMessage = errorMessage;
+			try {
+				if (typeof errorMessage === "string" && errorMessage.startsWith("{")) {
+					parsedMessage = JSON.parse(errorMessage);
+				}
+			} catch {}
+
+			return {
+				error: "Validation error",
+				message: parsedMessage,
+			};
 		}
 
 		set.status = 500;
@@ -89,11 +97,17 @@ export const app = new Elysia()
 			message: env.NODE_ENV === "development" ? errorMessage : undefined,
 		};
 	})
-	.use(requestLogger)
+
 	/**
 	 * Feature Modules
 	 * Register your business logic modules here.
 	 */
 	.use(healthModule)
-	.use(authModule)
 	.use(postsModule);
+
+if (env.ENABLE_AUTH) {
+	app.use(authModule);
+	appLogger.info("[AUTH] Authentication module enabled");
+} else {
+	appLogger.info("[AUTH] Authentication disabled (ENABLE_AUTH=false)");
+}

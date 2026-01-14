@@ -2,7 +2,6 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "@common/db";
 import { env } from "./env";
-import { logger } from "@common/logger";
 import { sendEmail } from "./email";
 
 /**
@@ -19,7 +18,7 @@ export const auth = betterAuth({
 		minPasswordLength: 8,
 		maxPasswordLength: 128,
 		requireEmailVerification: false,
-		// Password reset - enables /api/auth/forget-password endpoint
+		// Password reset - enables /api/auth/request-password-reset endpoint
 		sendResetPassword: async ({ user, url, token }, request) => {
 			void sendEmail({
 				to: user.email,
@@ -34,9 +33,7 @@ export const auth = betterAuth({
 				`,
 			});
 		},
-		onPasswordReset: async ({ user }, request) => {
-			logger.info({ email: user.email }, "Password has been reset");
-		},
+		onPasswordReset: async ({ user }, request) => {},
 	},
 	// Email verification (separate from emailAndPassword)
 	emailVerification: {
@@ -57,7 +54,7 @@ export const auth = betterAuth({
 		expiresIn: 60 * 60 * 24 * 7, // 7 days
 		updateAge: 60 * 60 * 24, // 1 day
 	},
-	secret: env.BETTER_AUTH_SECRET,
+	secret: env.BETTER_AUTH_SECRET!,
 	baseURL: env.BETTER_AUTH_URL,
 	advanced: {
 		cookiePrefix: "auth",

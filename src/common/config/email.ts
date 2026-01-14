@@ -1,6 +1,6 @@
 import { Resend } from "resend";
 import { env } from "./env";
-import { logger } from "@common/logger";
+import { appLogger } from "@common/logger";
 
 /**
  * Email sending helper using Resend
@@ -26,9 +26,12 @@ export const sendEmail = async ({
 			text,
 			html,
 		});
-		logger.info({ to, subject }, "Email sent via Resend");
+		appLogger.info({ to, subject }, "Email sent via Resend");
 	} else {
 		// Development: Log to console
-		logger.info({ to, subject, text }, "Email (not sent - no RESEND_API_KEY)");
+		appLogger.info(
+			{ to, subject, text },
+			"Email (not sent - no RESEND_API_KEY)"
+		);
 	}
 };

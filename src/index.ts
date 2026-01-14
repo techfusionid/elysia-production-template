@@ -1,6 +1,6 @@
 import { app } from "./app";
 import { env } from "@common/config/env";
-import { logger } from "@common/logger";
+import { appLogger } from "@common/logger";
 import { closeDatabase } from "@common/db";
 
 /**
@@ -14,25 +14,25 @@ const server = app.listen({
 });
 
 // Startup logs
-logger.info(`[SERVER] Running at http://${env.HOST}:${env.PORT}`);
-logger.info(
+appLogger.info(`[SERVER] Running at http://${env.HOST}:${env.PORT}`);
+appLogger.info(
 	`[API] Documentation available at http://${env.HOST}:${env.PORT}/docs`
 );
-logger.info(
+appLogger.info(
 	`[HEALTH] Health check endpoint: http://${env.HOST}:${env.PORT}/health`
 );
 
 // Graceful shutdown
 const shutdown = async (signal: string) => {
-	logger.info(`${signal} received, shutting down gracefully...`);
+	appLogger.info(`${signal} received, shutting down gracefully...`);
 
 	try {
 		await server.stop();
 		await closeDatabase();
-		logger.info("Server closed successfully");
+		appLogger.info("Server closed successfully");
 		process.exit(0);
 	} catch (error) {
-		logger.error({ error }, "Error during shutdown");
+		appLogger.error({ error }, "Error during shutdown");
 		process.exit(1);
 	}
 };

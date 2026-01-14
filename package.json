@@ -35,6 +35,7 @@
 		"docker:logs": "docker-compose logs -f"
 	},
 	"dependencies": {
+		"@bogeychan/elysia-logger": "^0.1.10",
 		"@elysiajs/bearer": "^1.2.0",
 		"@elysiajs/cors": "^1.4.0",
 		"@elysiajs/swagger": "^1.3.1",

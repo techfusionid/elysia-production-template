@@ -33,16 +33,26 @@ const EnvSchema = Type.Object({
 		pattern: "^postgresql://.+",
 	}),
 
-	// Better Auth
-	BETTER_AUTH_SECRET: Type.String({
-		minLength: 32,
-		description: "Secret key for Better Auth (min 32 characters)",
+	// Authentication
+	ENABLE_AUTH: Type.Boolean({
+		default: true,
+		description: "Enable/disable Better Auth module",
 	}),
-	BETTER_AUTH_URL: Type.String({
-		default: "http://localhost:3000",
-		description: "Base URL for authentication callbacks",
-		pattern: "^https?://.+",
-	}),
+
+	// Better Auth (required if ENABLE_AUTH=true)
+	BETTER_AUTH_SECRET: Type.Optional(
+		Type.String({
+			minLength: 32,
+			description: "Secret key for Better Auth (min 32 characters)",
+		})
+	),
+	BETTER_AUTH_URL: Type.Optional(
+		Type.String({
+			default: "http://localhost:3000",
+			description: "Base URL for authentication callbacks",
+			pattern: "^https?://.+",
+		})
+	),
 
 	// Optional: OAuth providers (uncomment if needed)
 	// GITHUB_CLIENT_ID: Type.Optional(Type.String()),
@@ -72,9 +82,12 @@ const EnvSchema = Type.Object({
 	}),
 
 	// Email (Optional - for email verification and password reset)
-	RESEND_API_KEY: Type.Optional(Type.String({
-		description: "Resend API key for sending emails (optional - logs to console if not set)",
-	})),
+	RESEND_API_KEY: Type.Optional(
+		Type.String({
+			description:
+				"Resend API key for sending emails (optional - logs to console if not set)",
+		})
+	),
 	EMAIL_FROM: Type.String({
 		description: "Email sender address",
 		default: "noreply@example.com",
@@ -124,6 +137,7 @@ export function validateEnv(): Env {
 		PORT: Number(process.env["PORT"] ?? 3000),
 		HOST: process.env["HOST"] || "0.0.0.0",
 		DATABASE_URL: process.env["DATABASE_URL"],
+		ENABLE_AUTH: process.env["ENABLE_AUTH"] !== "false",
 		BETTER_AUTH_SECRET: process.env["BETTER_AUTH_SECRET"],
 		BETTER_AUTH_URL: process.env["BETTER_AUTH_URL"] || "http://localhost:3000",
 		LOG_LEVEL: process.env["LOG_LEVEL"] || "info",
