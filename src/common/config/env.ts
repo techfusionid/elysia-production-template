@@ -71,6 +71,15 @@ const EnvSchema = Type.Object({
 		default: ["http://localhost:3000"],
 	}),
 
+	// Email (Optional - for email verification and password reset)
+	RESEND_API_KEY: Type.Optional(Type.String({
+		description: "Resend API key for sending emails (optional - logs to console if not set)",
+	})),
+	EMAIL_FROM: Type.String({
+		description: "Email sender address",
+		default: "noreply@example.com",
+	}),
+
 	// Rate Limiting
 	RATE_LIMIT_WINDOW_MS: Type.Optional(
 		Type.Number({
@@ -119,6 +128,8 @@ export function validateEnv(): Env {
 		BETTER_AUTH_URL: process.env["BETTER_AUTH_URL"] || "http://localhost:3000",
 		LOG_LEVEL: process.env["LOG_LEVEL"] || "info",
 		CORS_ORIGIN: corsOriginArray,
+		RESEND_API_KEY: process.env["RESEND_API_KEY"],
+		EMAIL_FROM: process.env["EMAIL_FROM"] || "noreply@example.com",
 		RATE_LIMIT_WINDOW_MS: process.env["RATE_LIMIT_WINDOW_MS"]
 			? Number(process.env["RATE_LIMIT_WINDOW_MS"])
 			: undefined,

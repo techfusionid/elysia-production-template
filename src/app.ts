@@ -19,7 +19,8 @@ import { postsModule } from "@modules/posts";
 
 export const app = new Elysia()
 	// --- Infrastructure & Security ---
-	.use(globalRateLimit)
+	// TODO: Re-enable rate limiting with elysia-ip plugin to avoid body consumption conflicts
+	// .use(globalRateLimit)
 	.use(
 		cors({
 			origin: env.CORS_ORIGIN,
@@ -89,7 +90,6 @@ export const app = new Elysia()
 		};
 	})
 	.use(requestLogger)
-
 	/**
 	 * Feature Modules
 	 * Register your business logic modules here.

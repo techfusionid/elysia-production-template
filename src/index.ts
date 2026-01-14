@@ -16,7 +16,7 @@ const server = app.listen({
 // Startup logs
 logger.info(`[SERVER] Running at http://${env.HOST}:${env.PORT}`);
 logger.info(
-	`[API] Documentation available at http://${env.HOST}:${env.PORT}/swagger`
+	`[API] Documentation available at http://${env.HOST}:${env.PORT}/docs`
 );
 logger.info(
 	`[HEALTH] Health check endpoint: http://${env.HOST}:${env.PORT}/health`

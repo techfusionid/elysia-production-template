@@ -2,6 +2,8 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "@common/db";
 import { env } from "./env";
+import { logger } from "@common/logger";
+import { sendEmail } from "./email";
 
 /**
  * Better Auth configuration
@@ -16,6 +18,40 @@ export const auth = betterAuth({
 		enabled: true,
 		minPasswordLength: 8,
 		maxPasswordLength: 128,
+		requireEmailVerification: false,
+		// Password reset - enables /api/auth/forget-password endpoint
+		sendResetPassword: async ({ user, url, token }, request) => {
+			void sendEmail({
+				to: user.email,
+				subject: "Reset your password",
+				text: `Click the link to reset your password: ${url}`,
+				html: `
+					<h2>Reset Your Password</h2>
+					<p>Click the link below to reset your password:</p>
+					<a href="${url}">Reset Password</a>
+					<p>This link will expire in 1 hour.</p>
+					<p>If you didn't request this, please ignore this email.</p>
+				`,
+			});
+		},
+		onPasswordReset: async ({ user }, request) => {
+			logger.info({ email: user.email }, "Password has been reset");
+		},
+	},
+	// Email verification (separate from emailAndPassword)
+	emailVerification: {
+		sendVerificationEmail: async ({ user, url, token }, request) => {
+			void sendEmail({
+				to: user.email,
+				subject: "Verify your email address",
+				text: `Click the link to verify your email: ${url}`,
+				html: `
+					<h2>Verify Your Email</h2>
+					<p>Click the link below to verify your email address:</p>
+					<a href="${url}">Verify Email</a>
+				`,
+			});
+		},
 	},
 	session: {
 		expiresIn: 60 * 60 * 24 * 7, // 7 days
