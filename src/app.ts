@@ -7,6 +7,10 @@ import { postsModule } from "@modules/posts";
 import { authModule } from "@modules/auth";
 import { appLogger } from "./common/logger";
 import { requestLogger } from "./common/middleware/request-logger";
+import {
+	authRateLimit,
+	globalRateLimit,
+} from "./common/middleware/rate-limiter";
 
 /**
  * Application composition root.
@@ -18,6 +22,7 @@ import { requestLogger } from "./common/middleware/request-logger";
 
 export const app = new Elysia()
 	.use(requestLogger)
+	.use(globalRateLimit)
 	.use(
 		cors({
 			origin: env.CORS_ORIGIN,
@@ -106,6 +111,7 @@ export const app = new Elysia()
 	.use(postsModule);
 
 if (env.ENABLE_AUTH) {
+	app.use(authRateLimit);
 	app.use(authModule);
 	appLogger.info("[AUTH] Authentication module enabled");
 } else {

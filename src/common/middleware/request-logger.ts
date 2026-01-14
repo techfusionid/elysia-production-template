@@ -2,10 +2,16 @@ import { Elysia } from "elysia";
 import { appLogger } from "@common/logger";
 
 export const requestLogger = () =>
-	new Elysia().onAfterResponse(({ request, set }) => {
-		const url = new URL(request.url);
-		const durationMs = (set as any).responseTime ?? 0;
-		appLogger.info(
-			`${set.status} ${request.method} ${url.pathname} (${durationMs}ms)`
-		);
-	});
+	new Elysia()
+		.onRequest(({ store }) => {
+			(store as any).startTime = Date.now();
+		})
+		.onAfterResponse(({ request, set, store }) => {
+			const url = new URL(request.url);
+			const startTime = (store as any).startTime;
+			const durationMs = startTime ? Date.now() - startTime : 0;
+
+			appLogger.info(
+				`${set.status} ${request.method} ${url.pathname} (${durationMs}ms)`
+			);
+		});
