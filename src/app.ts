@@ -103,10 +103,7 @@ export const app = new Elysia()
 		};
 	})
 
-	/**
-	 * Feature Modules
-	 * Register your business logic modules here.
-	 */
+	// Feature modules
 	.use(healthModule)
 	.use(postsModule);
 

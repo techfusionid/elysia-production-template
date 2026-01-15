@@ -1,10 +1,5 @@
 import { t } from "elysia";
 
-/**
- * TypeBox schemas for posts endpoints
- * Request/response validation
- */
-
 export const postSchema = t.Object({
 	id: t.String({ format: "uuid" }),
 	title: t.String(),

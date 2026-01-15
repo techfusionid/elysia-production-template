@@ -3,11 +3,7 @@ import { env } from "@common/config/env";
 import { appLogger } from "@common/logger";
 import { closeDatabase } from "@common/db";
 
-/**
- * Application entry point
- * Starts HTTP server and handles graceful shutdown
- */
-
+// App entrypoint
 const server = app.listen({
 	hostname: env.HOST,
 	port: env.PORT,

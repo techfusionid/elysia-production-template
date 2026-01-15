@@ -3,10 +3,9 @@ import { user, posts } from "@common/db/schema";
 import { appLogger } from "@common/logger";
 
 /**
- * Database Seed Script
- *
+ * Database Seed Script (OPTIONAL)
  * Populates the database with sample data for development.
- * Usage: bun run db:seed
+ * * Usage: bun run db:seed
  *
  * WARNING: Only run this in development environments.
  */

@@ -8,9 +8,7 @@ import * as service from "./service";
  * Demonstrates public/protected routes with ownership validation.
  */
 export const postsModule = withAuth(new Elysia({ prefix: "/api/posts" }))
-	// ============================================
 	// GET /api/posts - Public (anyone can view)
-	// ============================================
 	.get(
 		"/",
 		async () => {
@@ -29,9 +27,7 @@ export const postsModule = withAuth(new Elysia({ prefix: "/api/posts" }))
 		}
 	)
 
-	// ============================================
 	// GET /api/posts/:id - Public
-	// ============================================
 	.get(
 		"/:id",
 		async ({ params, set }) => {
@@ -56,9 +52,7 @@ export const postsModule = withAuth(new Elysia({ prefix: "/api/posts" }))
 		}
 	)
 
-	// ============================================
-	// POST /api/posts - All authenticated users
-	// ============================================
+	// POST /api/posts - Authenticated users
 	.post(
 		"/",
 		async ({ body, user, set }: any) => {
@@ -88,12 +82,11 @@ export const postsModule = withAuth(new Elysia({ prefix: "/api/posts" }))
 		}
 	)
 
-	// ============================================
 	// PUT /api/posts/:id - Owner only
-	// ============================================
 	.put(
 		"/:id",
 		async ({ params, body, user, set }: any) => {
+			// ownership check
 			const isOwner = await service.isPostOwner(params.id, user.id);
 
 			if (!isOwner) {
@@ -133,12 +126,11 @@ export const postsModule = withAuth(new Elysia({ prefix: "/api/posts" }))
 		}
 	)
 
-	// ============================================
 	// DELETE /api/posts/:id - Owner only
-	// ============================================
 	.delete(
 		"/:id",
 		async ({ params, user, set }: any) => {
+			// ownership check
 			const isOwner = await service.isPostOwner(params.id, user.id);
 
 			if (!isOwner) {

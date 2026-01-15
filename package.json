@@ -52,7 +52,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
-		"bun-types": "^1.1.38",
+		"@types/bun": "^1.3.6",
 		"drizzle-kit": "^0.28.1"
 	},
 	"engines": {

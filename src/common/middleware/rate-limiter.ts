@@ -3,7 +3,6 @@ import { LRUCache } from "lru-cache";
 import { env } from "@common/config/env";
 import { appLogger } from "@common/logger";
 
-// Global cache: IP → [timestamps]
 const globalCache = new LRUCache<string, number[]>({
 	max: 10000,
 	ttl: env.RATE_LIMIT_WINDOW_MS ?? 60000,

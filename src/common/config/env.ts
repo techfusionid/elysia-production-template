@@ -122,10 +122,6 @@ const EnvSchema = Type.Object({
 
 export type Env = Static<typeof EnvSchema>;
 
-/**
- * Validate and parse environment variables
- * Throws error if validation fails
- */
 export function validateEnv(): Env {
 	const rawCorsOrigin = process.env["CORS_ORIGIN"];
 	const corsOriginArray = rawCorsOrigin
@@ -171,8 +167,4 @@ export function validateEnv(): Env {
 	return Value.Decode(EnvSchema, rawEnv);
 }
 
-/**
- * Validated environment variables
- * Use this throughout the application instead of process.env
- */
 export const env = validateEnv();

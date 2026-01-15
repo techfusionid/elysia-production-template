@@ -1,12 +1,10 @@
 import pino from "pino";
 import { env } from "@common/config/env";
 
-/**
- * Application logger (Pino)
- * Pretty formatting in development, JSON in production
- */
+const isTest = process.env.NODE_ENV === "test"; // Bun sets this during `bun test`
+
 export const appLogger = pino({
-	level: env.LOG_LEVEL ?? "info",
+	level: isTest ? "silent" : env.LOG_LEVEL ?? "info",
 	transport:
 		env.NODE_ENV === "development"
 			? {

@@ -2,11 +2,6 @@ import { db } from "@common/db";
 import { posts, user } from "@common/db/schema";
 import { eq, desc } from "drizzle-orm";
 
-/**
- * Posts service layer
- * Business logic for posts CRUD operations
- */
-
 export async function getAllPosts() {
 	return await db
 		.select({
@@ -46,10 +41,7 @@ export async function createPost(data: {
 	content: string;
 	authorId: string;
 }) {
-	const [post] = await db
-		.insert(posts)
-		.values(data)
-		.returning();
+	const [post] = await db.insert(posts).values(data).returning();
 
 	return post;
 }
@@ -71,12 +63,13 @@ export async function updatePost(
 }
 
 export async function deletePost(id: string) {
-	await db
-		.delete(posts)
-		.where(eq(posts.id, id));
+	await db.delete(posts).where(eq(posts.id, id));
 }
 
-export async function isPostOwner(postId: string, userId: string): Promise<boolean> {
+export async function isPostOwner(
+	postId: string,
+	userId: string
+): Promise<boolean> {
 	const [post] = await db
 		.select({ authorId: posts.authorId })
 		.from(posts)
