@@ -45,6 +45,6 @@
 			"@modules/*": ["./src/modules/*"]
 		}
 	},
-	"include": ["src/**/*", "src/types", "scripts/**/*"],
+	"include": ["src", "scripts"],
 	"exclude": ["node_modules", "dist", "build", "coverage", "drizzle"]
 }

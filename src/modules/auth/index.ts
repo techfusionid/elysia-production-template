@@ -54,5 +54,29 @@ export const authModule = new Elysia({ prefix: "/api/auth" })
 				"Returns user data and session details if authenticated, or null if not authenticated.",
 		},
 	})
-	// Catch-all for other Better Auth routes (OAuth, password reset, verification, etc.)
+	// Request Password Reset
+	.post("/request-password-reset", ({ request }) => auth.handler(request), {
+		detail: {
+			tags: ["Auth"],
+			summary: "Request password reset",
+			description:
+				"Send password reset link to user's email.\n\n" +
+				"**Request Body (JSON):**\n" +
+				"- `email` (string, required): User email address\n" +
+				"- `redirectTo` (string, optional): Frontend URL to redirect after reset",
+		},
+	})
+	// Reset Password (after clicking link in email)
+	.post("/reset-password", ({ request }) => auth.handler(request), {
+		detail: {
+			tags: ["Auth"],
+			summary: "Reset password with token",
+			description:
+				"Reset user password using token from email link.\n\n" +
+				"**Request Body (JSON):**\n" +
+				"- `token` (string, required): Reset token from email\n" +
+				"- `newPassword` (string, required): New password",
+		},
+	})
+	// Catch-all for other Better Auth routes
 	.all("/*", ({ request }) => auth.handler(request));
