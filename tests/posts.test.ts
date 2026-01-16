@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'bun:test';
-import { app } from '../src/app';
+import { createApp } from '../src/app';
 
 describe('Posts Module', () => {
+	const app = createApp();
 	it('GET /api/posts returns list of posts', async () => {
 		const response = await app.handle(new Request('http://localhost/api/posts'));
 		const body = await response.json();

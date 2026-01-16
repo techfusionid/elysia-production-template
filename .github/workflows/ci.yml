@@ -43,6 +43,6 @@ jobs:
           NODE_ENV: test
           ENABLE_AUTH: "false"
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
-          BETTER_AUTH_SECRET: test-secret-for-ci
+          BETTER_AUTH_SECRET: test-secret-for-ci-32-characters-long!!!
           BETTER_AUTH_URL: http://localhost:3000
         run: bun test

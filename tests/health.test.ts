@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'bun:test';
-import { app } from '../src/app';
+import { createApp } from '../src/app';
 
 describe('Health Module', () => {
+	const app = createApp();
 	it('GET /health returns ok status', async () => {
 		const response = await app.handle(new Request('http://localhost/health'));
 		const body = await response.json();
