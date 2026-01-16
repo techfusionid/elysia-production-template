@@ -1,7 +1,7 @@
-import { t } from "elysia";
+import { t } from 'elysia';
 
 export const postSchema = t.Object({
-	id: t.String({ format: "uuid" }),
+	id: t.String({ format: 'uuid' }),
 	title: t.String(),
 	content: t.String(),
 	authorId: t.String(),
@@ -21,5 +21,5 @@ export const updatePostSchema = t.Object({
 });
 
 export const postIdParamSchema = t.Object({
-	id: t.String({ format: "uuid" }),
+	id: t.String({ format: 'uuid' }),
 });

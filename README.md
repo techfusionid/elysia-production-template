@@ -209,7 +209,16 @@ This template is designed to be configurable without hiding behavior. Below are 
 
 ### Disabling Authentication
 
-Set `ENABLE_AUTH=false` in `.env`. You can also remove the `src/modules/auth/` folder entirely.
+To disable authentication, set `ENABLE_AUTH=false` in `.env`.
+All auth routes and middleware will be automatically excluded.
+
+If you want to **completely remove built-in auth** from your codebase:
+
+1. Delete the `src/modules/auth/` folder
+2. Remove the `src/common/config/auth.ts` file
+3. (Optional) Clean up any route guards that use `auth: true` (e.g., in `posts` module)
+
+> 💡 For most use cases, just setting `ENABLE_AUTH=false` is sufficient and safe.
 
 ### Email Verification
 

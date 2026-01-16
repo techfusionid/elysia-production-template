@@ -5,5 +5,5 @@
  * - posts.ts: Posts CRUD reference implementation
  */
 
-export * from "./auth";
-export * from "./posts";
+export * from './auth';
+export * from './posts';

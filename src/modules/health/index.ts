@@ -1,6 +1,6 @@
-import { Elysia, t } from 'elysia';
 import { db } from '@common/db';
 import { sql } from 'drizzle-orm';
+import { Elysia, t } from 'elysia';
 
 export const healthModule = new Elysia({ prefix: '/health' }).get(
 	'/',

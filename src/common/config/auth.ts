@@ -1,8 +1,8 @@
-import { betterAuth } from "better-auth";
-import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { db } from "@common/db";
-import { env } from "./env";
-import { sendEmail } from "./email";
+import { db } from '@common/db';
+import { betterAuth } from 'better-auth';
+import { drizzleAdapter } from 'better-auth/adapters/drizzle';
+import { sendEmail } from './email';
+import { env } from './env';
 
 /**
  * Better Auth configuration
@@ -11,18 +11,19 @@ import { sendEmail } from "./email";
  */
 export const auth = betterAuth({
 	database: drizzleAdapter(db, {
-		provider: "pg",
+		provider: 'pg',
 	}),
 	emailAndPassword: {
 		enabled: true,
 		minPasswordLength: 8,
 		maxPasswordLength: 128,
 		requireEmailVerification: false,
+
 		// Password reset - enables /api/auth/request-password-reset endpoint
-		sendResetPassword: async ({ user, url, token }, request) => {
+		sendResetPassword: async ({ user, url, token: _token }, _request) => {
 			void sendEmail({
 				to: user.email,
-				subject: "Reset your password",
+				subject: 'Reset your password',
 				text: `Click the link to reset your password: ${url}`,
 				html: `
 					<h2>Reset Your Password</h2>
@@ -33,14 +34,16 @@ export const auth = betterAuth({
 				`,
 			});
 		},
-		onPasswordReset: async ({ user }, request) => {},
+
+		// Optional hook after password reset (extend for logging, notifications, etc.)
+		onPasswordReset: async ({ user: _user }, _request) => {},
 	},
 	// Email verification (separate from emailAndPassword)
 	emailVerification: {
-		sendVerificationEmail: async ({ user, url, token }, request) => {
+		sendVerificationEmail: async ({ user, url, token: _token }, _request) => {
 			void sendEmail({
 				to: user.email,
-				subject: "Verify your email address",
+				subject: 'Verify your email address',
 				text: `Click the link to verify your email: ${url}`,
 				html: `
 					<h2>Verify Your Email</h2>
@@ -57,13 +60,14 @@ export const auth = betterAuth({
 	secret: env.BETTER_AUTH_SECRET!,
 	baseURL: env.BETTER_AUTH_URL,
 	advanced: {
-		cookiePrefix: "auth",
-		useSecureCookies: env.NODE_ENV === "production",
+		// Secure cookie defaults (adjust if deploying behind a reverse proxy)
+		cookiePrefix: 'auth',
+		useSecureCookies: env.NODE_ENV === 'production',
 		defaultCookieAttributes: {
-			sameSite: "lax",
+			sameSite: 'lax',
 			httpOnly: true,
-			secure: env.NODE_ENV === "production",
-			path: "/",
+			secure: env.NODE_ENV === 'production',
+			path: '/',
 		},
 	},
 });

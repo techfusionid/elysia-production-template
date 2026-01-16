@@ -1,16 +1,13 @@
-import { Elysia } from "elysia";
-import { swagger } from "@elysiajs/swagger";
-import { cors } from "@elysiajs/cors";
-import { env } from "@common/config/env";
-import { healthModule } from "@modules/health";
-import { postsModule } from "@modules/posts";
-import { authModule } from "@modules/auth";
-import { appLogger } from "./common/logger";
-import { requestLogger } from "./common/middleware/request-logger";
-import {
-	authRateLimit,
-	globalRateLimit,
-} from "./common/middleware/rate-limiter";
+import { env } from '@common/config/env';
+import { cors } from '@elysiajs/cors';
+import { swagger } from '@elysiajs/swagger';
+import { authModule } from '@modules/auth';
+import { healthModule } from '@modules/health';
+import { postsModule } from '@modules/posts';
+import { Elysia } from 'elysia';
+import { appLogger } from './common/logger';
+import { authRateLimit, globalRateLimit } from './common/middleware/rate-limiter';
+import { requestLogger } from './common/middleware/request-logger';
 
 /**
  * Application composition root.
@@ -27,41 +24,36 @@ export const app = new Elysia()
 		cors({
 			origin: env.CORS_ORIGIN,
 			credentials: true,
-		})
+		}),
 	)
 	// ---  API Documentation (open at /docs) ---
 	.use(
 		swagger({
-			path: "/docs",
+			path: '/docs',
 			documentation: {
 				info: {
-					title: "Elysia Production API",
-					version: "1.0.0",
+					title: 'Elysia Production API',
+					version: '1.0.0',
 					description:
-						"Production-ready Elysia.js backend with auth, database, and best practices.\n\n" +
-						"**Authentication Endpoints** (via Better Auth):\n" +
-						"- POST `/api/auth/sign-up/email` - Register with email\n" +
-						"- POST `/api/auth/sign-in/email` - Login with email\n" +
-						"- POST `/api/auth/sign-out` - Logout\n" +
-						"- GET `/api/auth/get-session` - Get current session\n\n" +
-						"Full Better Auth docs: https://better-auth.com",
+						'Production-ready Elysia.js backend with auth, database, and best practices.\n\n' +
+						'Full Better Auth documentation: https://better-auth.com',
 				},
 				tags: [
-					{ name: "Health", description: "Health check endpoints" },
+					{ name: 'Health', description: 'Health check endpoints' },
 					{
-						name: "Auth",
-						description: "Authentication endpoints (Better Auth)",
+						name: 'Auth',
+						description: 'Authentication endpoints (Better Auth)',
 					},
 					{
-						name: "Posts",
-						description: "Posts CRUD endpoints (reference implementation)",
+						name: 'Posts',
+						description: 'Posts CRUD endpoints (reference implementation)',
 					},
 				],
 			},
 			scalarConfig: {
-				theme: "purple",
+				theme: 'purple',
 			},
-		})
+		}),
 	)
 	.onError(({ code, error, set }) => {
 		const errorMessage = error instanceof Error ? error.message : String(error);
@@ -69,37 +61,34 @@ export const app = new Elysia()
 		appLogger.error({
 			code,
 			error: errorMessage,
-			stack:
-				env.NODE_ENV === "development" && error instanceof Error
-					? error.stack
-					: undefined,
+			stack: env.NODE_ENV === 'development' && error instanceof Error ? error.stack : undefined,
 		});
 
-		if (code === "NOT_FOUND") {
+		if (code === 'NOT_FOUND') {
 			set.status = 404;
-			return { error: "Route not found" };
+			return { error: 'Route not found' };
 		}
 
-		if (code === "VALIDATION") {
+		if (code === 'VALIDATION') {
 			set.status = 400;
 
 			let parsedMessage = errorMessage;
 			try {
-				if (typeof errorMessage === "string" && errorMessage.startsWith("{")) {
+				if (typeof errorMessage === 'string' && errorMessage.startsWith('{')) {
 					parsedMessage = JSON.parse(errorMessage);
 				}
 			} catch {}
 
 			return {
-				error: "Validation error",
+				error: 'Validation error',
 				message: parsedMessage,
 			};
 		}
 
 		set.status = 500;
 		return {
-			error: "Internal server error",
-			message: env.NODE_ENV === "development" ? errorMessage : undefined,
+			error: 'Internal server error',
+			message: env.NODE_ENV === 'development' ? errorMessage : undefined,
 		};
 	})
 
@@ -110,7 +99,7 @@ export const app = new Elysia()
 if (env.ENABLE_AUTH) {
 	app.use(authRateLimit);
 	app.use(authModule);
-	appLogger.info("[AUTH] Authentication module enabled");
+	appLogger.info('[AUTH] Authentication module enabled');
 } else {
-	appLogger.info("[AUTH] Authentication disabled (ENABLE_AUTH=false)");
+	appLogger.info('[AUTH] Authentication disabled (ENABLE_AUTH=false)');
 }

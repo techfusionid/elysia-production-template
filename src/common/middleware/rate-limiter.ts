@@ -1,7 +1,7 @@
-import { Elysia } from "elysia";
-import { LRUCache } from "lru-cache";
-import { env } from "@common/config/env";
-import { appLogger } from "@common/logger";
+import { env } from '@common/config/env';
+import { appLogger } from '@common/logger';
+import { Elysia } from 'elysia';
+import { LRUCache } from 'lru-cache';
 
 const globalCache = new LRUCache<string, number[]>({
 	max: 10000,
@@ -16,9 +16,9 @@ const authCache = new LRUCache<string, number[]>({
 
 const getClientIP = (req: Request): string => {
 	return (
-		req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-		req.headers.get("x-real-ip") ||
-		"127.0.0.1"
+		req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+		req.headers.get('x-real-ip') ||
+		'127.0.0.1'
 	);
 };
 
@@ -39,15 +39,15 @@ export const createRateLimiter = (options: {
 		valid.push(now);
 
 		if (valid.length > options.max) {
-			if (env.NODE_ENV === "development") {
+			if (env.NODE_ENV === 'development') {
 				appLogger.warn(
-					`[RATE_LIMIT] IP ${ip} blocked (limit: ${options.max}/${options.windowMs}ms)`
+					`[RATE_LIMIT] IP ${ip} blocked (limit: ${options.max}/${options.windowMs}ms)`,
 				);
 			}
 			set.status = 429;
 			return {
-				error: "Too Many Requests",
-				message: "Rate limit exceeded. Please try again later.",
+				error: 'Too Many Requests',
+				message: 'Rate limit exceeded. Please try again later.',
 			};
 		}
 
@@ -60,9 +60,9 @@ export const globalRateLimit = createRateLimiter({
 	windowMs: env.RATE_LIMIT_WINDOW_MS ?? 60000,
 	cache: globalCache,
 	skip: (req) => {
-		if (req.method === "OPTIONS") return true;
+		if (req.method === 'OPTIONS') return true;
 		const path = new URL(req.url).pathname;
-		return path === "/health" || path.startsWith("/api/auth");
+		return path === '/health' || path.startsWith('/api/auth');
 	},
 });
 
