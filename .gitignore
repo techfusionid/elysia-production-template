@@ -55,7 +55,6 @@ postgres-data/
 pgdata/
 
 # Drizzle
-drizzle/meta/
 .drizzle/
 
 # Docker
