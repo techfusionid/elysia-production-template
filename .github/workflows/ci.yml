@@ -35,14 +35,32 @@ jobs:
       - name: Install dependencies
         run: bun install
 
+      - name: Install PostgreSQL client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
       - name: Run linter
         run: bun run lint
+
+      - name: Wait for Postgres
+        run: |
+          for i in {1..10}; do
+            pg_isready -h postgres -p 5432 -U postgres && break
+            echo "Waiting for postgres..."
+            sleep 2
+          done
+
+      - name: Run database migrations
+        run: |
+          DATABASE_URL=postgresql://postgres:postgres@postgres:5432/test_db \
+          ENABLE_AUTH=false \
+          NODE_ENV=test \
+          bun run db:migrate
 
       - name: Run tests
         env:
           NODE_ENV: test
           ENABLE_AUTH: "false"
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
+          DATABASE_URL: postgresql://postgres:postgres@postgres:5432/test_db
           BETTER_AUTH_SECRET: test-secret-for-ci-32-characters-long!!!
           BETTER_AUTH_URL: http://localhost:3000
         run: bun test

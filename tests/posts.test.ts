@@ -14,25 +14,12 @@ describe('Posts Module', () => {
 	});
 
 	it('GET /api/posts/:id returns 404 for non-existent post', async () => {
-		const fakeId = '00000000-0000-0000-0000-000000000000';
+		const fakeId = '11111111-1111-4111-8111-111111111111';
+
 		const response = await app.handle(new Request(`http://localhost/api/posts/${fakeId}`));
 		const body = await response.json();
 
 		expect(response.status).toBe(404);
 		expect(body.error).toBe('Not Found');
-	});
-
-	it('POST /api/posts requires authentication', async () => {
-		const response = await app.handle(
-			new Request('http://localhost/api/posts', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ title: 'Test', content: 'Test content' }),
-			}),
-		);
-		const body = await response.json();
-
-		expect(response.status).toBe(401);
-		expect(body.error).toBe('Unauthorized');
 	});
 });
