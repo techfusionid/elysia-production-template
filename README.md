@@ -1,7 +1,10 @@
-<h1 align="center">Elysia Production Template</h1>
-
+<h1 align="center">Elysia Production Boilerplate</h1>
+<h3 align="center">
+    A production-ready ElysiaJS starter for your projects, featuring<br>
+    <b>Clean Architecture</b>, <b>Better Auth</b>, <b>Drizzle ORM</b>, and <b>OpenAPI</b> documentation.
+</h3>
 <p align="center">
-  <i>Ship production-ready projects with Elysia.js APIs faster. Provides optional Better Auth, Scalar docs, rate limiting, logging, and Docker support.</i>
+    <img src=".github/assets/thumbnail.png" alt="Elysia Production Template Thumbnail" width="600">
 </p>
 
 <p align="center">
@@ -36,22 +39,25 @@
 - 🚀 **Production-ready foundation** — Designed for both local development and production systems
 - ⚡ **High-performance HTTP layer** — Fully async Elysia.js on Bun
 - 🔐 **Built-in API security** — First-class support for protected and public endpoints
-- 🔑 **Built-in Authentication** — Login & registration with OTP support (Better Auth, toggleable)
-- 🧪 **Type-safe validation** — Runtime + compile-time schemas with TypeBox
-- 🗄️ **Database-ready** — PostgreSQL + Drizzle ORM with migrations
-- 📜 **Clear API docs** — OpenAPI rendered with Scalar UI at `/docs`
+- 🔑 **Built-in Authentication** — Login, registration, & OTPs (Better Auth, toggleable)
+- 🧪 **Type-safe Validation** — Runtime + compile-time schemas with TypeBox
+- 🗄️ **Database & Migrations** — PostgreSQL + Drizzle ORM with built-in migration handling
+- 🔍 **Smart Error Handling** — Centralized error normalization and standardized responses
+- 📜 **API Documentation** — OpenAPI rendered with Scalar UI at `/docs`
 - ⏱️ **Rate limiting** — Global and auth-aware traffic protection
+- 📧 **Email Infrastructure** — Native Resend + React Email integration for notifications
 - 🧾 **Structured logging** — Pino with dev-friendly output
+- 🔍 **Error Handling** — Comprehensive error handling system
 - 🧹 **Linting & formatting** — Biome for consistent code style
-- 🐳 **Containerized workflow** — One-command Docker Compose
+- 🐳 **Docker Ready** — One-command  compose and production container setup
 
-## What is this?
+## Why use this starter?
 
-Elysia.js is currently the fastest framework in the Bun ecosystem, delivering industry-leading performance with outstanding throughput and ultra-low latency.
+**Elysia.js is fast.** It's currently the fastest framework in the Bun ecosystem, delivering industry-leading performance with outstanding throughput and ultra-low latency.
 
-The problem? Getting from raw performance to a production-ready setup takes time.
+**The problem?** Setting up Authentication, ORM, Docker, and logging from scratch for a production-ready app takes hours.
 
-This boilerplate provides a **simple, ready-to-use, production-grade foundation** so you can focus on building features immediately, without redoing repetitive configuration and setup.
+This boilerplate provides a **simple, ready-to-use, production-grade foundation** so you can focus on building features immediately with Elysia, without redoing repetitive configuration and setup.
 
 ### Perfect if you want to:
 
