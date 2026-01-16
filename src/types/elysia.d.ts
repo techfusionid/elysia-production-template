@@ -1,6 +1,6 @@
-import "elysia";
+import 'elysia';
 
-declare module "elysia" {
+declare module 'elysia' {
 	interface Context {
 		user: {
 			id: string;

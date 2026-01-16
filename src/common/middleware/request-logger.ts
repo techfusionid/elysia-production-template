@@ -1,5 +1,5 @@
-import { Elysia } from "elysia";
-import { appLogger } from "@common/logger";
+import { appLogger } from '@common/logger';
+import { Elysia } from 'elysia';
 
 export const requestLogger = () =>
 	new Elysia()
@@ -11,7 +11,5 @@ export const requestLogger = () =>
 			const startTime = (store as any).startTime;
 			const durationMs = startTime ? Date.now() - startTime : 0;
 
-			appLogger.info(
-				`${set.status} ${request.method} ${url.pathname} (${durationMs}ms)`
-			);
+			appLogger.info(`${set.status} ${request.method} ${url.pathname} (${durationMs}ms)`);
 		});

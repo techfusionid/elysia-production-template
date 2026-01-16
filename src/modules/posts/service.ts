@@ -1,6 +1,6 @@
-import { db } from "@common/db";
-import { posts, user } from "@common/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { db } from '@common/db';
+import { posts, user } from '@common/db/schema';
+import { desc, eq } from 'drizzle-orm';
 
 export async function getAllPosts() {
 	return await db
@@ -46,10 +46,7 @@ export async function createPost(data: {
 	return post;
 }
 
-export async function updatePost(
-	id: string,
-	data: { title?: string; content?: string }
-) {
+export async function updatePost(id: string, data: { title?: string; content?: string }) {
 	const [post] = await db
 		.update(posts)
 		.set({
@@ -66,10 +63,7 @@ export async function deletePost(id: string) {
 	await db.delete(posts).where(eq(posts.id, id));
 }
 
-export async function isPostOwner(
-	postId: string,
-	userId: string
-): Promise<boolean> {
+export async function isPostOwner(postId: string, userId: string): Promise<boolean> {
 	const [post] = await db
 		.select({ authorId: posts.authorId })
 		.from(posts)

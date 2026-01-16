@@ -1,16 +1,16 @@
-import { Elysia, t } from "elysia";
-import { withAuth } from "@common/middleware/auth-guard";
-import * as service from "./service";
+import { withAuth } from '@common/middleware/auth-guard';
+import { Elysia, t } from 'elysia';
+import * as service from './service';
 
 /**
  * Posts CRUD Module
  *
  * Demonstrates public/protected routes with ownership validation.
  */
-export const postsModule = withAuth(new Elysia({ prefix: "/api/posts" }))
+export const postsModule = withAuth(new Elysia({ prefix: '/api/posts' }))
 	// GET /api/posts - Public (anyone can view)
 	.get(
-		"/",
+		'/',
 		async () => {
 			const posts = await service.getAllPosts();
 			return {
@@ -20,41 +20,41 @@ export const postsModule = withAuth(new Elysia({ prefix: "/api/posts" }))
 		},
 		{
 			detail: {
-				tags: ["Posts"],
-				summary: "Get all posts",
-				description: "Public endpoint - returns all posts with author info",
+				tags: ['Posts'],
+				summary: 'Get all posts',
+				description: 'Public endpoint - returns all posts with author info',
 			},
-		}
+		},
 	)
 
 	// GET /api/posts/:id - Public
 	.get(
-		"/:id",
+		'/:id',
 		async ({ params, set }) => {
 			const post = await service.getPostById(params.id);
 
 			if (!post) {
 				set.status = 404;
-				return { error: "Not Found", message: "Post not found" };
+				return { error: 'Not Found', message: 'Post not found' };
 			}
 
 			return { data: post };
 		},
 		{
 			params: t.Object({
-				id: t.String({ format: "uuid" }),
+				id: t.String({ format: 'uuid' }),
 			}),
 			detail: {
-				tags: ["Posts"],
-				summary: "Get post by ID",
-				description: "Public endpoint - returns a single post",
+				tags: ['Posts'],
+				summary: 'Get post by ID',
+				description: 'Public endpoint - returns a single post',
 			},
-		}
+		},
 	)
 
 	// POST /api/posts - Authenticated users
 	.post(
-		"/",
+		'/',
 		async ({ body, user, set }: any) => {
 			const post = await service.createPost({
 				title: body.title,
@@ -64,7 +64,7 @@ export const postsModule = withAuth(new Elysia({ prefix: "/api/posts" }))
 
 			set.status = 201;
 			return {
-				message: "Post created successfully",
+				message: 'Post created successfully',
 				data: post,
 			};
 		},
@@ -75,16 +75,16 @@ export const postsModule = withAuth(new Elysia({ prefix: "/api/posts" }))
 				content: t.String({ minLength: 1 }),
 			}),
 			detail: {
-				tags: ["Posts"],
-				summary: "Create post",
-				description: "Protected - creates a new post for authenticated user",
+				tags: ['Posts'],
+				summary: 'Create post',
+				description: 'Protected - creates a new post for authenticated user',
 			},
-		}
+		},
 	)
 
 	// PUT /api/posts/:id - Owner only
 	.put(
-		"/:id",
+		'/:id',
 		async ({ params, body, user, set }: any) => {
 			// ownership check
 			const isOwner = await service.isPostOwner(params.id, user.id);
@@ -92,8 +92,8 @@ export const postsModule = withAuth(new Elysia({ prefix: "/api/posts" }))
 			if (!isOwner) {
 				set.status = 403;
 				return {
-					error: "Forbidden",
-					message: "You can only update your own posts",
+					error: 'Forbidden',
+					message: 'You can only update your own posts',
 				};
 			}
 
@@ -101,34 +101,34 @@ export const postsModule = withAuth(new Elysia({ prefix: "/api/posts" }))
 
 			if (!post) {
 				set.status = 404;
-				return { error: "Not Found", message: "Post not found" };
+				return { error: 'Not Found', message: 'Post not found' };
 			}
 
 			return {
-				message: "Post updated successfully",
+				message: 'Post updated successfully',
 				data: post,
 			};
 		},
 		{
 			auth: true, // 👈 Require login + ownership check in handler
 			params: t.Object({
-				id: t.String({ format: "uuid" }),
+				id: t.String({ format: 'uuid' }),
 			}),
 			body: t.Object({
 				title: t.Optional(t.String({ minLength: 1, maxLength: 255 })),
 				content: t.Optional(t.String({ minLength: 1 })),
 			}),
 			detail: {
-				tags: ["Posts"],
-				summary: "Update post",
-				description: "Protected - updates a post (owner only)",
+				tags: ['Posts'],
+				summary: 'Update post',
+				description: 'Protected - updates a post (owner only)',
 			},
-		}
+		},
 	)
 
 	// DELETE /api/posts/:id - Owner only
 	.delete(
-		"/:id",
+		'/:id',
 		async ({ params, user, set }: any) => {
 			// ownership check
 			const isOwner = await service.isPostOwner(params.id, user.id);
@@ -136,26 +136,26 @@ export const postsModule = withAuth(new Elysia({ prefix: "/api/posts" }))
 			if (!isOwner) {
 				set.status = 403;
 				return {
-					error: "Forbidden",
-					message: "You can only delete your own posts",
+					error: 'Forbidden',
+					message: 'You can only delete your own posts',
 				};
 			}
 
 			await service.deletePost(params.id);
 
 			return {
-				message: "Post deleted successfully",
+				message: 'Post deleted successfully',
 			};
 		},
 		{
 			auth: true, // 👈 Require login + ownership check in handler
 			params: t.Object({
-				id: t.String({ format: "uuid" }),
+				id: t.String({ format: 'uuid' }),
 			}),
 			detail: {
-				tags: ["Posts"],
-				summary: "Delete post",
-				description: "Protected - deletes a post (owner only)",
+				tags: ['Posts'],
+				summary: 'Delete post',
+				description: 'Protected - deletes a post (owner only)',
 			},
-		}
+		},
 	);
