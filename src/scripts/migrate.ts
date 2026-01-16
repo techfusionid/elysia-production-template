@@ -1,4 +1,3 @@
-import { env } from '@common/config/env';
 import { appLogger } from '@common/logger';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
@@ -10,10 +9,12 @@ import postgres from 'postgres';
  * Usage: bun run db:migrate
  */
 
+const DATABASE_URL = process.env['DATABASE_URL']!;
+
 async function runMigrations() {
 	appLogger.info('[MIGRATION] Starting database migration...');
 
-	const migrationClient = postgres(env.DATABASE_URL, { max: 1 });
+	const migrationClient = postgres(DATABASE_URL, { max: 1 });
 	const db = drizzle(migrationClient);
 
 	try {
@@ -33,6 +34,7 @@ runMigrations()
 		process.exit(0);
 	})
 	.catch((error) => {
+		console.error('[MIGRATION] Critical error:', error);
 		appLogger.error({ error }, '[MIGRATION] Migration script failed');
 		process.exit(1);
 	});
