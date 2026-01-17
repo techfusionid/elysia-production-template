@@ -50,17 +50,20 @@ jobs:
           done
 
       - name: Run database migrations
-        run: |
-          DATABASE_URL=postgresql://postgres:postgres@localhost:5432/test_db \
-          ENABLE_AUTH=false \
-          NODE_ENV=test \
-          bun run db:migrate
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
+          ENABLE_AUTH: "true"
+          NODE_ENV: test
+          BETTER_AUTH_SECRET: test-secret-for-ci-32-characters-long!!!
+          BETTER_AUTH_URL: http://localhost:3000
+        run: bun run db:migrate
 
       - name: Run tests
         env:
           NODE_ENV: test
-          ENABLE_AUTH: "false"
+          ENABLE_AUTH: "true"
+          ENABLE_RATE_LIMITER: "false"
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
           BETTER_AUTH_SECRET: test-secret-for-ci-32-characters-long!!!
           BETTER_AUTH_URL: http://localhost:3000
-        run: bun test
+        run: bun run test

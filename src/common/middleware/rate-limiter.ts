@@ -29,6 +29,8 @@ export const createRateLimiter = (options: {
 	skip?: (req: Request) => boolean;
 }) => {
 	return new Elysia().onRequest(({ request, set }) => {
+		// Skip if rate limiting is disabled
+		if (!env.ENABLE_RATE_LIMITER) return;
 		if (options.skip?.(request)) return;
 
 		const ip = getClientIP(request);

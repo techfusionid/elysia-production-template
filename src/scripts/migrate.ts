@@ -6,7 +6,7 @@ import postgres from 'postgres';
 /**
  * Database Migration Script
  * Runs all pending migrations from the ./drizzle folder.
- * Usage: bun run db:migrate
+ * * Usage: bun run db:migrate
  */
 
 const DATABASE_URL = process.env['DATABASE_URL']!;
