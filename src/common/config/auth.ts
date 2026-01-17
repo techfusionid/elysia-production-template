@@ -17,7 +17,7 @@ export const auth = betterAuth({
 		enabled: true,
 		minPasswordLength: 8,
 		maxPasswordLength: 128,
-		requireEmailVerification: false,
+		requireEmailVerification: env.REQUIRE_EMAIL_VERIFICATION,
 
 		// Password reset - enables /api/auth/request-password-reset endpoint
 		sendResetPassword: async ({ user, url, token: _token }, _request) => {

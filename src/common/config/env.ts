@@ -33,6 +33,10 @@ const EnvSchema = Type.Object({
 		default: true,
 		description: 'Enable/disable Better Auth module',
 	}),
+	REQUIRE_EMAIL_VERIFICATION: Type.Boolean({
+		default: false,
+		description: 'Require email verification before login',
+	}),
 
 	// Better Auth (required if ENABLE_AUTH=true)
 	BETTER_AUTH_SECRET: Type.Optional(
@@ -48,12 +52,6 @@ const EnvSchema = Type.Object({
 			pattern: '^https?://.+',
 		}),
 	),
-
-	// Optional: OAuth providers (uncomment if needed)
-	// GITHUB_CLIENT_ID: Type.Optional(Type.String()),
-	// GITHUB_CLIENT_SECRET: Type.Optional(Type.String()),
-	// GOOGLE_CLIENT_ID: Type.Optional(Type.String()),
-	// GOOGLE_CLIENT_SECRET: Type.Optional(Type.String()),
 
 	// Logging
 	LOG_LEVEL: Type.Union(
@@ -88,6 +86,10 @@ const EnvSchema = Type.Object({
 	}),
 
 	// Rate Limiting
+	ENABLE_RATE_LIMITER: Type.Boolean({
+		default: true,
+		description: 'Enable/disable rate limiting',
+	}),
 	RATE_LIMIT_WINDOW_MS: Type.Optional(
 		Type.Number({
 			description: 'Global rate limit window in milliseconds',
@@ -128,12 +130,14 @@ export function validateEnv(): Env {
 		HOST: process.env['HOST'] || '0.0.0.0',
 		DATABASE_URL: process.env['DATABASE_URL'],
 		ENABLE_AUTH: process.env['ENABLE_AUTH'] !== 'false',
+		REQUIRE_EMAIL_VERIFICATION: process.env['REQUIRE_EMAIL_VERIFICATION'] === 'true',
 		BETTER_AUTH_SECRET: process.env['BETTER_AUTH_SECRET'],
 		BETTER_AUTH_URL: process.env['BETTER_AUTH_URL'] || 'http://localhost:3000',
 		LOG_LEVEL: process.env['LOG_LEVEL'] || 'info',
 		CORS_ORIGIN: corsOriginArray,
 		RESEND_API_KEY: process.env['RESEND_API_KEY'],
 		EMAIL_FROM: process.env['EMAIL_FROM'] || 'noreply@example.com',
+		ENABLE_RATE_LIMITER: process.env['ENABLE_RATE_LIMITER'] !== 'false',
 		RATE_LIMIT_WINDOW_MS: process.env['RATE_LIMIT_WINDOW_MS']
 			? Number(process.env['RATE_LIMIT_WINDOW_MS'])
 			: undefined,

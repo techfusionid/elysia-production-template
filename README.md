@@ -37,19 +37,18 @@
 ### What you get:
 
 - 🚀 **Production-ready foundation** — Designed for both local development and production systems
-- ⚡ **High-performance HTTP layer** — Fully async Elysia.js on Bun
+- ⚡ **High-Performance Foundation** — Leverages Bun's async speed with Elysia.js for ultra-low latency.
 - 🔐 **Built-in API security** — First-class support for protected and public endpoints
 - 🔑 **Built-in Authentication** — Login, registration, & OTPs (Better Auth, toggleable)
-- 🧪 **Type-safe Validation** — Runtime + compile-time schemas with TypeBox
+- ✅ **Type-safe Validation** — Runtime + compile-time schemas with TypeBox
 - 🗄️ **Database & Migrations** — PostgreSQL + Drizzle ORM with built-in migration handling
-- 🔍 **Smart Error Handling** — Centralized error normalization and standardized responses
-- 📜 **API Documentation** — OpenAPI rendered with Scalar UI at `/docs`
-- ⏱️ **Rate limiting** — Global and auth-aware traffic protection
+- 📖 **API Documentation** — OpenAPI rendered with Scalar UI at `/docs`
+- 🚦 **Rate limiting** — Global and auth-aware traffic protection
 - 📧 **Email Infrastructure** — Native Resend + React Email integration for notifications
-- 🧾 **Structured logging** — Pino with dev-friendly output
-- 🔍 **Error Handling** — Comprehensive error handling system
+- 📋 **Structured logging** — Pino with dev-friendly output
+- ⚠️ **Error Handling** — Comprehensive error handling system
 - 🧹 **Linting & formatting** — Biome for consistent code style
-- 🐳 **Docker Ready** — One-command  compose and production container setup
+- 🐳 **Docker Ready** — One-command compose and production container setup
 
 ## Why use this starter?
 
@@ -126,14 +125,16 @@ tests/                # Integration tests
 
 Key environment variables (see `.env.example` for full list):
 
-| Variable             | Description                                                   | Required             |
-| -------------------- | ------------------------------------------------------------- | -------------------- |
-| `DATABASE_URL`       | PostgreSQL connection string                                  | Yes                  |
-| `BETTER_AUTH_SECRET` | Auth secret key (generate: `openssl rand -base64 32`)         | Yes                  |
-| `BETTER_AUTH_URL`    | Base URL for auth callbacks                                   | Yes                  |
-| `ENABLE_AUTH`        | Enable/disable auth module                                    | No (default: `true`) |
-| `LOG_LEVEL`          | Log level: `fatal`, `error`, `warn`, `info`, `debug`, `trace` | No (default: `info`) |
-| `CORS_ORIGIN`        | Allowed origins (comma-separated)                             | No                   |
+| Variable                     | Description                                                   | Required              |
+| ---------------------------- | ------------------------------------------------------------- | --------------------- |
+| `DATABASE_URL`               | PostgreSQL connection string                                  | Yes                   |
+| `BETTER_AUTH_SECRET`         | Auth secret key (generate: `openssl rand -base64 32`)         | Yes                   |
+| `BETTER_AUTH_URL`            | Base URL for auth callbacks                                   | Yes                   |
+| `ENABLE_AUTH`                | Enable/disable auth module                                    | No (default: `true`)  |
+| `REQUIRE_EMAIL_VERIFICATION` | Require email verification before login                       | No (default: `false`) |
+| `ENABLE_RATE_LIMITER`        | Enable/disable rate limiting                                  | No (default: `true`)  |
+| `LOG_LEVEL`                  | Log level: `fatal`, `error`, `warn`, `info`, `debug`, `trace` | No (default: `info`)  |
+| `CORS_ORIGIN`                | Allowed origins (comma-separated)                             | No                    |
 
 ## Commands
 
@@ -150,8 +151,11 @@ bun run start        # Start production server
 **Testing:**
 
 ```bash
-bun test             # Run integration tests
+bun run test         # Run integration tests
 ```
+
+> [!NOTE]
+> Tests run against your local database. Make sure PostgreSQL is running before testing.
 
 **Database:**
 
@@ -228,24 +232,28 @@ If you want to **completely remove built-in auth** from your codebase:
 
 ### Email Verification
 
-By default, email verification is disabled. To enable:
+By default, email verification is disabled. To enable, set in `.env`:
 
-```typescript
-// src/common/config/auth.ts
-emailAndPassword: {
-  requireEmailVerification: true,
-}
+```bash
+REQUIRE_EMAIL_VERIFICATION=true
 ```
 
-**Development:** Emails are logged to console (no provider needed).
+When enabled, users must verify their email before they can log in.
 
-**Production:** Set `RESEND_API_KEY` and `EMAIL_FROM` in `.env` to send real emails via [Resend](https://resend.com).
+> [!TIP]
+> In development, emails are logged to console (no provider needed). For production, set `RESEND_API_KEY` and `EMAIL_FROM` in `.env` to send real emails via [Resend](https://resend.com).
 
 ### Password Reset
 
 Password reset works out of the box. In development, reset links are logged to console. For production, configure Resend (see above).
 
 ### Rate Limiting
+
+Rate limiting is enabled by default. To disable (e.g., for testing):
+
+```bash
+ENABLE_RATE_LIMITER=false
+```
 
 Adjust rate limits via environment variables:
 
