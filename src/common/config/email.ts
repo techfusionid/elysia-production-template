@@ -18,15 +18,23 @@ export const sendEmail = async ({
 	html?: string;
 }) => {
 	if (env.RESEND_API_KEY && env.RESEND_API_KEY.length > 0) {
-		const resend = new Resend(env.RESEND_API_KEY);
-		await resend.emails.send({
-			from: env.EMAIL_FROM,
-			to,
-			subject,
-			text,
-			html,
-		});
-		appLogger.info({ to, subject }, 'Email sent via Resend');
+		try {
+			const resend = new Resend(env.RESEND_API_KEY);
+			const result = await resend.emails.send({
+				from: env.EMAIL_FROM,
+				to,
+				subject,
+				text,
+				html,
+			});
+			if (result.error) {
+				appLogger.error({ to, subject, error: result.error }, 'Failed to send email via Resend');
+			} else {
+				appLogger.info({ to, subject, id: result.data?.id }, 'Email sent via Resend');
+			}
+		} catch (error) {
+			appLogger.error({ to, subject, error }, 'Error sending email via Resend');
+		}
 	} else {
 		// Development: Log to console
 		appLogger.info({ to, subject, text }, 'Email (not sent - no RESEND_API_KEY)');

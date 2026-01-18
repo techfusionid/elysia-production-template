@@ -92,6 +92,14 @@ export const createApp = () => {
 			};
 		})
 
+		// Root endpoint - API info
+		.get('/', () => ({
+			name: 'Elysia Production API',
+			version: '1.0.0',
+			docs: '/docs',
+			health: '/health',
+		}))
+
 		// Feature modules
 		.use(healthModule)
 		.use(postsModule);

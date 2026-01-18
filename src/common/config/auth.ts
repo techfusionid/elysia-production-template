@@ -21,7 +21,7 @@ export const auth = betterAuth({
 
 		// Password reset - enables /api/auth/request-password-reset endpoint
 		sendResetPassword: async ({ user, url, token: _token }, _request) => {
-			void sendEmail({
+			await sendEmail({
 				to: user.email,
 				subject: 'Reset your password',
 				text: `Click the link to reset your password: ${url}`,
@@ -41,7 +41,7 @@ export const auth = betterAuth({
 	// Email verification (separate from emailAndPassword)
 	emailVerification: {
 		sendVerificationEmail: async ({ user, url, token: _token }, _request) => {
-			void sendEmail({
+			await sendEmail({
 				to: user.email,
 				subject: 'Verify your email address',
 				text: `Click the link to verify your email: ${url}`,
