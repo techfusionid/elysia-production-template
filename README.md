@@ -138,12 +138,15 @@ Key environment variables (see `.env.example` for full list):
 
 ## Commands
 
-**Common development and maintenance commands:**
-
 **Development:**
 
 ```bash
 bun run dev          # Start dev server with hot reload
+```
+
+**Production:**
+
+```bash
 bun run build        # Build for production
 bun run start        # Start production server
 ```
@@ -162,7 +165,7 @@ bun run test         # Run integration tests
 ```bash
 bun run db:generate  # Generate Drizzle migrations
 bun run db:migrate   # Run migrations
-bun run db:studio    # Open Drizzle Studio
+bun run db:studio    # Open Drizzle Studio (visual database browser)
 ```
 
 **Linting:**
@@ -298,7 +301,9 @@ For additional checks beyond login (e.g., ownership, roles, permissions), add lo
 
 ### Adding New Modules
 
-The `posts` module is a reference CRUD implementation. To add a new module:
+The `posts` module is included as a reference CRUD implementation. Feel free to remove or replace it with your own modules.
+
+To add a new module:
 
 1. Create folder: `src/modules/your-module/`
 2. Add `index.ts` (routes), `service.ts` (business logic), and optionally `schema.ts`
