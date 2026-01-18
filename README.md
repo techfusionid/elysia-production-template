@@ -14,6 +14,9 @@
   <a href="https://bun.sh">
     <img src="https://img.shields.io/badge/Bun-000000?logo=bun&style=for-the-badge" alt="Bun">
   </a>
+  <a href="https://www.typescriptlang.org">
+    <img src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white&style=for-the-badge" alt="TypeScript">
+  </a>
   <a href="https://better-auth.com">
     <img src="https://img.shields.io/badge/Better%20Auth-000000?style=for-the-badge" alt="Better Auth">
   </a>
@@ -36,23 +39,20 @@
 
 ### What you get:
 
-- 🚀 **Production-ready foundation** — Designed for both local development and production systems
-- ⚡ **High-Performance Foundation** — Leverages Bun's async speed with Elysia.js for ultra-low latency.
-- 🔐 **Built-in API security** — First-class support for protected and public endpoints
-- 🔑 **Built-in Authentication** — Login, registration, & OTPs (Better Auth, toggleable)
-- ✅ **Type-safe Validation** — Runtime + compile-time schemas with TypeBox
-- 🗄️ **Database & Migrations** — PostgreSQL + Drizzle ORM with built-in migration handling
-- 📖 **API Documentation** — OpenAPI rendered with Scalar UI at `/docs`
-- 🚦 **Rate limiting** — Global and auth-aware traffic protection
-- 📧 **Email Infrastructure** — Native Resend + React Email integration for notifications
-- 📋 **Structured logging** — Pino with dev-friendly output
-- ⚠️ **Error Handling** — Comprehensive error handling system
-- 🧹 **Linting & formatting** — Biome for consistent code style
-- 🐳 **Docker Ready** — One-command compose and production container setup
+- ⚡ High-performance, fully async APIs
+- 🔐 Built-in Auth & API Endpoint Protection (Better Auth)
+- ✅ Type-safe validation (TypeBox)
+- 🗄️ Database & Migrations (PostgreSQL + Drizzle ORM)
+- 📖 API Documentation via OpenAPI with Scalar UI
+- 🚦 Rate limiter for global & auth
+- 🧾 Structured logging using Pino
+- 🌐 Configurable CORS middleware for frontend integration
+- 📧 Email Infrastructure via Resend + React Email _(optional)_
+- 🐳 One-command Docker Compose
 
 ## Why use this starter?
 
-**Elysia.js is fast.** It's currently the fastest framework in the Bun ecosystem, delivering industry-leading performance with outstanding throughput and ultra-low latency.
+**Elysia.js is fast.** It's currently the fastest framework in the Bun ecosystem, with [benchmarks showing performance](https://elysiajs.com/at-glance.html#performance) that can match Golang and Rust frameworks.
 
 **The problem?** Setting up Authentication, ORM, Docker, and logging from scratch for a production-ready app takes hours.
 
