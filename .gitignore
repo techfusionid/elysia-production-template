@@ -65,6 +65,8 @@ docker-data/
 tmp/
 temp/
 *.tmp
+tempCodeRunnerFile*
+cookies.txt
 
 # Production builds
 .output/

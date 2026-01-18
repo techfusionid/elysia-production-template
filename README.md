@@ -26,13 +26,16 @@
   <a href="https://www.postgresql.org">
     <img src="https://img.shields.io/badge/PostgreSQL-316192?logo=postgresql&logoColor=white&style=for-the-badge" alt="PostgreSQL">
   </a>
+  <a href="https://www.docker.com">
+    <img src="https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white&style=for-the-badge" alt="Docker">
+  </a>
 </p>
 
 <p align="center">
   <a href="https://github.com/techfusionid/elysia-production-template/actions/workflows/ci.yml">
-    <img src="https://img.shields.io/github/actions/workflow/status/techfusionid/elysia-production-template/ci.yml?label=CI&logo=github&style=for-the-badge" alt="CI">
+    <img src="https://img.shields.io/github/actions/workflow/status/techfusionid/elysia-production-template/ci.yml?label=CI&logo=github&style=flat" alt="CI">
   </a>
-  <img src="https://img.shields.io/badge/OpenAPI-documented-6BA539?logo=openapi&style=for-the-badge" alt="OpenAPI">
+  <img src="https://img.shields.io/badge/OpenAPI-documented-6BA539?logo=openapi&style=flat" alt="OpenAPI">
 </p>
 
 ## Features
@@ -138,12 +141,15 @@ Key environment variables (see `.env.example` for full list):
 
 ## Commands
 
-**Common development and maintenance commands:**
-
 **Development:**
 
 ```bash
 bun run dev          # Start dev server with hot reload
+```
+
+**Production:**
+
+```bash
 bun run build        # Build for production
 bun run start        # Start production server
 ```
@@ -162,7 +168,7 @@ bun run test         # Run integration tests
 ```bash
 bun run db:generate  # Generate Drizzle migrations
 bun run db:migrate   # Run migrations
-bun run db:studio    # Open Drizzle Studio
+bun run db:studio    # Open Drizzle Studio (visual database browser)
 ```
 
 **Linting:**
@@ -186,14 +192,14 @@ Below are the main routes exposed by the template. See `/docs` for full request/
 
 **Auth routes** (via Better Auth):
 
-| Method | Endpoint                    | Description            |
-| ------ | --------------------------- | ---------------------- |
-| POST   | `/api/auth/sign-up/email`   | Register               |
-| POST   | `/api/auth/sign-in/email`   | Login                  |
-| POST   | `/api/auth/sign-out`        | Logout                 |
-| GET    | `/api/auth/get-session`     | Get current session    |
-| POST   | `/api/auth/forgot-password` | Request password reset |
-| POST   | `/api/auth/reset-password`  | Reset password         |
+| Method | Endpoint                           | Description            |
+| ------ | ---------------------------------- | ---------------------- |
+| POST   | `/api/auth/sign-up/email`          | Register               |
+| POST   | `/api/auth/sign-in/email`          | Login                  |
+| POST   | `/api/auth/sign-out`               | Logout                 |
+| GET    | `/api/auth/get-session`            | Get current session    |
+| POST   | `/api/auth/request-password-reset` | Request password reset |
+| POST   | `/api/auth/reset-password`         | Reset password         |
 
 **Posts routes** (example CRUD):
 
@@ -241,11 +247,26 @@ REQUIRE_EMAIL_VERIFICATION=true
 When enabled, users must verify their email before they can log in.
 
 > [!TIP]
-> In development, emails are logged to console (no provider needed). For production, set `RESEND_API_KEY` and `EMAIL_FROM` in `.env` to send real emails via [Resend](https://resend.com).
+> In development, emails are logged to console (no provider needed). To test with real emails, configure Resend (see below).
+
+### Email Setup (Resend)
+
+To send real emails for verification and password reset:
+
+1. Create an account at [resend.com](https://resend.com)
+2. Get your API key from the dashboard
+3. Add to `.env`:
+   ```bash
+   RESEND_API_KEY=re_xxxxxxxxxxxxx
+   EMAIL_FROM=onboarding@resend.dev
+   ```
+
+> [!NOTE]
+> **Sandbox mode:** `onboarding@resend.dev` can only send to your Resend account email. For production, verify your domain. See [Resend documentation](https://resend.com/docs) for details.
 
 ### Password Reset
 
-Password reset works out of the box. In development, reset links are logged to console. For production, configure Resend (see above).
+Password reset works out of the box. Reset links are logged to console in development, or sent via email when Resend is configured.
 
 ### Rate Limiting
 
@@ -298,7 +319,9 @@ For additional checks beyond login (e.g., ownership, roles, permissions), add lo
 
 ### Adding New Modules
 
-The `posts` module is a reference CRUD implementation. To add a new module:
+The `posts` module is included as a reference CRUD implementation. Feel free to remove or replace it with your own modules.
+
+To add a new module:
 
 1. Create folder: `src/modules/your-module/`
 2. Add `index.ts` (routes), `service.ts` (business logic), and optionally `schema.ts`
