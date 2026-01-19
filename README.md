@@ -36,6 +36,9 @@
     <img src="https://img.shields.io/github/actions/workflow/status/techfusionid/elysia-production-template/ci.yml?label=CI&logo=github&style=flat" alt="CI">
   </a>
   <img src="https://img.shields.io/badge/OpenAPI-documented-6BA539?logo=openapi&style=flat" alt="OpenAPI">
+    <a href="https://github.com/techfusionid/elysia-production-template/generate">
+  <img src="https://img.shields.io/badge/use%20this-template-2ea44f?style=flat-square" />
+</a>
 </p>
 
 ## Features
@@ -55,7 +58,7 @@
 
 ## Why use this starter?
 
-**Elysia.js is fast.** It's currently the fastest framework in the Bun ecosystem, with [benchmarks showing performance](https://elysiajs.com/at-glance.html#performance) that can match Golang and Rust frameworks.
+**Elysia.js is fast.** It's currently one of the fastest frameworks in the Bun ecosystem, with [benchmarks showing performance](https://elysiajs.com/at-glance.html#performance) that can match Golang and Rust frameworks (based on TechEmpower Benchmarks).
 
 **The problem?** Setting up Authentication, ORM, Docker, and logging from scratch for a production-ready app takes hours.
 
@@ -68,9 +71,21 @@ This boilerplate provides a **simple, ready-to-use, production-grade foundation*
 - Keep full control over configuration while avoiding boilerplate fatigue
 - Use modern, type-safe tooling without framework lock-in
 
+---
+
 ## Quick Start
 
-**Clone the repo:**
+### 1. Use This Template (Recommended)
+
+Click the green **"Use this template"** button at the top of this repo — or use the direct link:
+
+👉 [**Create from template**](https://github.com/techfusionid/elysia-production-template/generate)
+
+> Creates a clean repo without git history.
+
+### 2. Clone the repository (Alternative)
+
+If you prefer cloning manually:
 
 ```bash
 git clone https://github.com/techfusionid/elysia-production-template.git
@@ -96,7 +111,7 @@ bun run dev
 **Or with Docker:**
 
 ```bash
-docker-compose up
+docker compose up
 ```
 
 Your app is now running:
@@ -123,6 +138,7 @@ src/
 
 tests/                # Integration tests
 ```
+
 > 📌 **Note**
 > The `posts` module and its API endpoints are provided as example CRUD implementations.
 > You can safely modify or remove them if not needed.
@@ -131,19 +147,19 @@ tests/                # Integration tests
 
 Key environment variables (see `.env.example` for full list):
 
-| Variable                     | Description                                                   | Required              |
-| ---------------------------- | ------------------------------------------------------------- | --------------------- |
-| `NODE_ENV` | Runtime environment (`development`, `production`, `test`) | No (default: `development`) |
-| `HOST`     | Server bind address                                       | No (default: `0.0.0.0`)     |
-| `PORT`     | Server port                                               | No (default: `3000`)        |
-| `DATABASE_URL`               | PostgreSQL connection string                                  | Yes                   |
-| `BETTER_AUTH_SECRET`         | Auth secret key (generate: `openssl rand -base64 32`)         | Yes                   |
-| `BETTER_AUTH_URL`            | Base URL for auth callbacks                                   | Yes                   |
-| `ENABLE_AUTH`                | Enable/disable auth module                                    | No (default: `true`)  |
-| `REQUIRE_EMAIL_VERIFICATION` | Require email verification before login                       | No (default: `false`) |
-| `ENABLE_RATE_LIMITER`        | Enable/disable rate limiting                                  | No (default: `true`)  |
-| `LOG_LEVEL`                  | Log level: `fatal`, `error`, `warn`, `info`, `debug`, `trace` | No (default: `info`)  |
-| `CORS_ORIGIN`                | Allowed origins (comma-separated)                             | No (default: `http://localhost:3000,http://localhost:5173`)                    |
+| Variable                     | Description                                                   | Required                                                    |
+| ---------------------------- | ------------------------------------------------------------- | ----------------------------------------------------------- |
+| `NODE_ENV`                   | Runtime environment (`development`, `production`, `test`)     | No (default: `development`)                                 |
+| `HOST`                       | Server bind address                                           | No (default: `0.0.0.0`)                                     |
+| `PORT`                       | Server port                                                   | No (default: `3000`)                                        |
+| `DATABASE_URL`               | PostgreSQL connection string                                  | Yes                                                         |
+| `BETTER_AUTH_SECRET`         | Auth secret key (generate: `openssl rand -base64 32`)         | Yes                                                         |
+| `BETTER_AUTH_URL`            | Base URL for auth callbacks                                   | Yes                                                         |
+| `ENABLE_AUTH`                | Enable/disable auth module                                    | No (default: `true`)                                        |
+| `REQUIRE_EMAIL_VERIFICATION` | Require email verification before login                       | No (default: `false`)                                       |
+| `ENABLE_RATE_LIMITER`        | Enable/disable rate limiting                                  | No (default: `true`)                                        |
+| `LOG_LEVEL`                  | Log level: `fatal`, `error`, `warn`, `info`, `debug`, `trace` | No (default: `info`)                                        |
+| `CORS_ORIGIN`                | Allowed origins (comma-separated)                             | No (default: `http://localhost:3000,http://localhost:5173`) |
 
 > `NODE_ENV` is used to adjust logging visual, testing, and runtime behavior.
 
@@ -164,13 +180,15 @@ Log verbosity can be controlled using the `LOG_LEVEL` environment variable.
 bun run dev          # Start dev server with hot reload
 ```
 
+---
+
 **🐳 Local Development with Docker PostgreSQL**
 
 For local development, it's recommended to run PostgreSQL via Docker
 while keeping the API running locally with Bun.
 
 ```bash
-docker-compose up -d postgres
+docker compose up -d postgres
 ```
 
 **Production:**
@@ -185,17 +203,19 @@ bun run start        # Start production server
 **Docker Compose**
 
 Run API + PostgreSQL fully inside Docker:
+
 ```bash
-docker-compose up
-docker-compose up --build
-docker-compose down
+docker compose up
+docker compose up --build
+docker compose down
 ```
 
 View compose logs:
+
 ```bash
-docker-compose logs -f
-docker-compose logs -f api
-docker-compose logs -f postgres
+docker compose logs -f
+docker compose logs -f api
+docker compose logs -f postgres
 ```
 
 **Database & Migration (Drizzle):**
@@ -374,7 +394,6 @@ app.use(yourModule);
 
 ---
 
-
 ## Deployment
 
 This template is container-ready and works well with most Docker-based platforms.
@@ -388,7 +407,7 @@ This project aims to stay **simple, production-focused, and easy to extend**, so
 
 ---
 
-## How to contribute
+### How to contribute
 
 1. Fork this repository
 2. Create a new branch from `main`
@@ -426,8 +445,6 @@ Yes. Includes rate limiting, structured logging, error handling, health checks, 
 - Ensure HTTPS is handled by a reverse proxy or your hosting platform (nginx, Caddy, or managed TLS)
 </details>
 
-
 ## License
 
 [MIT](LICENSE)
-
