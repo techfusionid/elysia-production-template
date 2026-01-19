@@ -123,6 +123,9 @@ src/
 
 tests/                # Integration tests
 ```
+> 📌 **Note**
+> The `posts` module and its API endpoints are provided as example CRUD implementations.
+> You can safely modify or remove them if not needed.
 
 ## Configuration
 
@@ -130,6 +133,9 @@ Key environment variables (see `.env.example` for full list):
 
 | Variable                     | Description                                                   | Required              |
 | ---------------------------- | ------------------------------------------------------------- | --------------------- |
+| `NODE_ENV` | Runtime environment (`development`, `production`, `test`) | No (default: `development`) |
+| `HOST`     | Server bind address                                       | No (default: `0.0.0.0`)     |
+| `PORT`     | Server port                                               | No (default: `3000`)        |
 | `DATABASE_URL`               | PostgreSQL connection string                                  | Yes                   |
 | `BETTER_AUTH_SECRET`         | Auth secret key (generate: `openssl rand -base64 32`)         | Yes                   |
 | `BETTER_AUTH_URL`            | Base URL for auth callbacks                                   | Yes                   |
@@ -137,7 +143,18 @@ Key environment variables (see `.env.example` for full list):
 | `REQUIRE_EMAIL_VERIFICATION` | Require email verification before login                       | No (default: `false`) |
 | `ENABLE_RATE_LIMITER`        | Enable/disable rate limiting                                  | No (default: `true`)  |
 | `LOG_LEVEL`                  | Log level: `fatal`, `error`, `warn`, `info`, `debug`, `trace` | No (default: `info`)  |
-| `CORS_ORIGIN`                | Allowed origins (comma-separated)                             | No                    |
+| `CORS_ORIGIN`                | Allowed origins (comma-separated)                             | No (default: `http://localhost:3000,http://localhost:5173`)                    |
+
+> `NODE_ENV` is used to adjust logging visual, testing, and runtime behavior.
+
+## Logging
+
+Logging behavior is automatically adjusted based on `NODE_ENV`:
+
+- `NODE_ENV=development`: human-readable logs for easier debugging
+- `NODE_ENV=production`: structured JSON logs, optimized for log aggregation and monitoring
+
+Log verbosity can be controlled using the `LOG_LEVEL` environment variable.
 
 ## Commands
 
@@ -147,12 +164,49 @@ Key environment variables (see `.env.example` for full list):
 bun run dev          # Start dev server with hot reload
 ```
 
+**🐳 Local Development with Docker PostgreSQL**
+
+For local development, it's recommended to run PostgreSQL via Docker
+while keeping the API running locally with Bun.
+
+```bash
+docker-compose up -d postgres
+```
+
 **Production:**
 
 ```bash
 bun run build        # Build for production
 bun run start        # Start production server
 ```
+
+---
+
+**Docker Compose**
+
+Run API + PostgreSQL fully inside Docker:
+```bash
+docker-compose up
+docker-compose up --build
+docker-compose down
+```
+
+View compose logs:
+```bash
+docker-compose logs -f
+docker-compose logs -f api
+docker-compose logs -f postgres
+```
+
+**Database & Migration (Drizzle):**
+
+```bash
+bun run db:generate  # Generate Drizzle migrations
+bun run db:migrate   # Run migrations
+bun run db:studio    # Open Drizzle Studio (visual database browser)
+```
+
+---
 
 **Testing:**
 
@@ -163,14 +217,6 @@ bun run test         # Run integration tests
 > [!NOTE]
 > Tests run against your local database. Make sure PostgreSQL is running before testing.
 
-**Database:**
-
-```bash
-bun run db:generate  # Generate Drizzle migrations
-bun run db:migrate   # Run migrations
-bun run db:studio    # Open Drizzle Studio (visual database browser)
-```
-
 **Linting:**
 
 ```bash
@@ -178,13 +224,7 @@ bun run lint         # Run Biome linter
 bun run format       # Format code
 ```
 
-**Docker:**
-
-```bash
-docker-compose up              # Start all services
-docker-compose up --build      # Rebuild and start
-docker-compose down            # Stop all services
-```
+---
 
 ## API Endpoints
 
@@ -201,7 +241,7 @@ Below are the main routes exposed by the template. See `/docs` for full request/
 | POST   | `/api/auth/request-password-reset` | Request password reset |
 | POST   | `/api/auth/reset-password`         | Reset password         |
 
-**Posts routes** (example CRUD):
+**Posts routes** (example CRUD – safe to remove):
 
 | Method | Endpoint         | Description     | Auth  |
 | ------ | ---------------- | --------------- | ----- |
@@ -334,31 +374,6 @@ app.use(yourModule);
 
 ---
 
-## FAQ
-
-<details>
-<summary><strong>Why Elysia.js?</strong></summary>
-
-Elysia is currently the fastest Bun framework with excellent TypeScript support, end-to-end type safety, and a clean plugin architecture. Perfect for building production APIs without sacrificing developer experience.
-
-</details>
-
-<details>
-<summary><strong>Can I use a different database?</strong></summary>
-
-The template uses PostgreSQL with Drizzle ORM. Drizzle also supports MySQL and SQLite. Update the connection config and adjust schema types as needed.
-
-</details>
-
-<details>
-<summary><strong>Is this production-ready?</strong></summary>
-
-Yes. Includes rate limiting, structured logging, error handling, health checks, and Docker support. For production, ensure you:
-
-- Use strong secrets
-- Set up database backups
-- Ensure HTTPS is handled by a reverse proxy or your hosting platform (nginx, Caddy, or managed TLS)
-</details>
 
 ## Deployment
 
@@ -385,6 +400,34 @@ This project aims to stay **simple, production-focused, and easy to extend**, so
 git checkout -b my-feature
 ```
 
+## FAQ
+
+<details>
+<summary><strong>Why Elysia.js?</strong></summary>
+
+Elysia is currently the fastest Bun framework with excellent TypeScript support, end-to-end type safety, and a clean plugin architecture. Perfect for building production APIs without sacrificing developer experience.
+
+</details>
+
+<details>
+<summary><strong>Can I use a different database?</strong></summary>
+
+The template uses PostgreSQL with Drizzle ORM. Drizzle also supports MySQL and SQLite. Update the connection config and adjust schema types as needed.
+
+</details>
+
+<details>
+<summary><strong>Is this production-ready?</strong></summary>
+
+Yes. Includes rate limiting, structured logging, error handling, health checks, and Docker support. For production, ensure you:
+
+- Use strong secrets
+- Set up database backups
+- Ensure HTTPS is handled by a reverse proxy or your hosting platform (nginx, Caddy, or managed TLS)
+</details>
+
+
 ## License
 
 [MIT](LICENSE)
+
