@@ -36,6 +36,9 @@
     <img src="https://img.shields.io/github/actions/workflow/status/techfusionid/elysia-production-template/ci.yml?label=CI&logo=github&style=flat" alt="CI">
   </a>
   <img src="https://img.shields.io/badge/OpenAPI-documented-6BA539?logo=openapi&style=flat" alt="OpenAPI">
+    <a href="https://github.com/techfusionid/elysia-production-template/generate">
+  <img src="https://img.shields.io/badge/use%20this-template-2ea44f?style=flat-square" />
+</a>
 </p>
 
 ## Features
@@ -55,7 +58,7 @@
 
 ## Why use this starter?
 
-**Elysia.js is fast.** It's currently the fastest framework in the Bun ecosystem, with [benchmarks showing performance](https://elysiajs.com/at-glance.html#performance) that can match Golang and Rust frameworks.
+**Elysia.js is fast.** It's currently one of the fastest frameworks in the Bun ecosystem, with [benchmarks showing performance](https://elysiajs.com/at-glance.html#performance) that can match Golang and Rust frameworks (based on TechEmpower Benchmarks).
 
 **The problem?** Setting up Authentication, ORM, Docker, and logging from scratch for a production-ready app takes hours.
 
@@ -68,9 +71,21 @@ This boilerplate provides a **simple, ready-to-use, production-grade foundation*
 - Keep full control over configuration while avoiding boilerplate fatigue
 - Use modern, type-safe tooling without framework lock-in
 
+---
+
 ## Quick Start
 
-**Clone the repo:**
+### 1. Use This Template (Recommended)
+
+Click the green **"Use this template"** button at the top of this repo — or use the direct link:
+
+👉 [**Create from template**](https://github.com/techfusionid/elysia-production-template/generate)
+
+> Creates a clean repo without git history.
+
+### 2. Clone the repository (Alternative)
+
+If you prefer cloning manually:
 
 ```bash
 git clone https://github.com/techfusionid/elysia-production-template.git
@@ -163,6 +178,8 @@ Log verbosity can be controlled using the `LOG_LEVEL` environment variable.
 ```bash
 bun run dev          # Start dev server with hot reload
 ```
+
+---
 
 **🐳 Local Development with Docker PostgreSQL**
 
@@ -388,7 +405,7 @@ This project aims to stay **simple, production-focused, and easy to extend**, so
 
 ---
 
-## How to contribute
+### How to contribute
 
 1. Fork this repository
 2. Create a new branch from `main`
