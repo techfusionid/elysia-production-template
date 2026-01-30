@@ -36,6 +36,9 @@
     <img src="https://img.shields.io/github/actions/workflow/status/techfusionid/elysia-production-template/ci.yml?label=CI&logo=github&style=flat" alt="CI">
   </a>
   <img src="https://img.shields.io/badge/OpenAPI-documented-6BA539?logo=openapi&style=flat" alt="OpenAPI">
+    <a href="https://github.com/techfusionid/elysia-production-template/generate">
+  <img src="https://img.shields.io/badge/use%20this-template-2ea44f?style=flat-square" />
+</a>
 </p>
 
 ## Features
@@ -55,7 +58,7 @@
 
 ## Why use this starter?
 
-**Elysia.js is fast.** It's currently the fastest framework in the Bun ecosystem, with [benchmarks showing performance](https://elysiajs.com/at-glance.html#performance) that can match Golang and Rust frameworks.
+**Elysia.js is fast.** It's currently one of the fastest frameworks in the Bun ecosystem, with [benchmarks showing performance](https://elysiajs.com/at-glance.html#performance) that can match Golang and Rust frameworks (based on TechEmpower Benchmarks).
 
 **The problem?** Setting up Authentication, ORM, Docker, and logging from scratch for a production-ready app takes hours.
 
@@ -68,9 +71,21 @@ This boilerplate provides a **simple, ready-to-use, production-grade foundation*
 - Keep full control over configuration while avoiding boilerplate fatigue
 - Use modern, type-safe tooling without framework lock-in
 
+---
+
 ## Quick Start
 
-**Clone the repo:**
+### 1. Use This Template (Recommended)
+
+Click the green **"Use this template"** button at the top of this repo — or use the direct link:
+
+👉 [**Create from template**](https://github.com/techfusionid/elysia-production-template/generate)
+
+> Creates a clean repo without git history.
+
+### 2. Clone the repository (Alternative)
+
+If you prefer cloning manually:
 
 ```bash
 git clone https://github.com/techfusionid/elysia-production-template.git
@@ -96,7 +111,7 @@ bun run dev
 **Or with Docker:**
 
 ```bash
-docker-compose up
+docker compose up
 ```
 
 Your app is now running:
@@ -124,20 +139,38 @@ src/
 tests/                # Integration tests
 ```
 
+> 📌 **Note**
+> The `posts` module and its API endpoints are provided as example CRUD implementations.
+> You can safely modify or remove them if not needed.
+
 ## Configuration
 
 Key environment variables (see `.env.example` for full list):
 
-| Variable                     | Description                                                   | Required              |
-| ---------------------------- | ------------------------------------------------------------- | --------------------- |
-| `DATABASE_URL`               | PostgreSQL connection string                                  | Yes                   |
-| `BETTER_AUTH_SECRET`         | Auth secret key (generate: `openssl rand -base64 32`)         | Yes                   |
-| `BETTER_AUTH_URL`            | Base URL for auth callbacks                                   | Yes                   |
-| `ENABLE_AUTH`                | Enable/disable auth module                                    | No (default: `true`)  |
-| `REQUIRE_EMAIL_VERIFICATION` | Require email verification before login                       | No (default: `false`) |
-| `ENABLE_RATE_LIMITER`        | Enable/disable rate limiting                                  | No (default: `true`)  |
-| `LOG_LEVEL`                  | Log level: `fatal`, `error`, `warn`, `info`, `debug`, `trace` | No (default: `info`)  |
-| `CORS_ORIGIN`                | Allowed origins (comma-separated)                             | No                    |
+| Variable                     | Description                                                   | Required                                                    |
+| ---------------------------- | ------------------------------------------------------------- | ----------------------------------------------------------- |
+| `NODE_ENV`                   | Runtime environment (`development`, `production`, `test`)     | No (default: `development`)                                 |
+| `HOST`                       | Server bind address                                           | No (default: `0.0.0.0`)                                     |
+| `PORT`                       | Server port                                                   | No (default: `3000`)                                        |
+| `DATABASE_URL`               | PostgreSQL connection string                                  | Yes                                                         |
+| `BETTER_AUTH_SECRET`         | Auth secret key (generate: `openssl rand -base64 32`)         | Yes                                                         |
+| `BETTER_AUTH_URL`            | Base URL for auth callbacks                                   | Yes                                                         |
+| `ENABLE_AUTH`                | Enable/disable auth module                                    | No (default: `true`)                                        |
+| `REQUIRE_EMAIL_VERIFICATION` | Require email verification before login                       | No (default: `false`)                                       |
+| `ENABLE_RATE_LIMITER`        | Enable/disable rate limiting                                  | No (default: `true`)                                        |
+| `LOG_LEVEL`                  | Log level: `fatal`, `error`, `warn`, `info`, `debug`, `trace` | No (default: `info`)                                        |
+| `CORS_ORIGIN`                | Allowed origins (comma-separated)                             | No (default: `http://localhost:3000,http://localhost:5173`) |
+
+> `NODE_ENV` is used to adjust logging visual, testing, and runtime behavior.
+
+## Logging
+
+Logging behavior is automatically adjusted based on `NODE_ENV`:
+
+- `NODE_ENV=development`: human-readable logs for easier debugging
+- `NODE_ENV=production`: structured JSON logs, optimized for log aggregation and monitoring
+
+Log verbosity can be controlled using the `LOG_LEVEL` environment variable.
 
 ## Commands
 
@@ -147,12 +180,53 @@ Key environment variables (see `.env.example` for full list):
 bun run dev          # Start dev server with hot reload
 ```
 
+---
+
+**🐳 Local Development with Docker PostgreSQL**
+
+For local development, it's recommended to run PostgreSQL via Docker
+while keeping the API running locally with Bun.
+
+```bash
+docker compose up -d postgres
+```
+
 **Production:**
 
 ```bash
 bun run build        # Build for production
 bun run start        # Start production server
 ```
+
+---
+
+**Docker Compose**
+
+Run API + PostgreSQL fully inside Docker:
+
+```bash
+docker compose up
+docker compose up --build
+docker compose down
+```
+
+View compose logs:
+
+```bash
+docker compose logs -f
+docker compose logs -f api
+docker compose logs -f postgres
+```
+
+**Database & Migration (Drizzle):**
+
+```bash
+bun run db:generate  # Generate Drizzle migrations
+bun run db:migrate   # Run migrations
+bun run db:studio    # Open Drizzle Studio (visual database browser)
+```
+
+---
 
 **Testing:**
 
@@ -163,14 +237,6 @@ bun run test         # Run integration tests
 > [!NOTE]
 > Tests run against your local database. Make sure PostgreSQL is running before testing.
 
-**Database:**
-
-```bash
-bun run db:generate  # Generate Drizzle migrations
-bun run db:migrate   # Run migrations
-bun run db:studio    # Open Drizzle Studio (visual database browser)
-```
-
 **Linting:**
 
 ```bash
@@ -178,13 +244,7 @@ bun run lint         # Run Biome linter
 bun run format       # Format code
 ```
 
-**Docker:**
-
-```bash
-docker-compose up              # Start all services
-docker-compose up --build      # Rebuild and start
-docker-compose down            # Stop all services
-```
+---
 
 ## API Endpoints
 
@@ -201,7 +261,7 @@ Below are the main routes exposed by the template. See `/docs` for full request/
 | POST   | `/api/auth/request-password-reset` | Request password reset |
 | POST   | `/api/auth/reset-password`         | Reset password         |
 
-**Posts routes** (example CRUD):
+**Posts routes** (example CRUD – safe to remove):
 
 | Method | Endpoint         | Description     | Auth  |
 | ------ | ---------------- | --------------- | ----- |
@@ -334,6 +394,31 @@ app.use(yourModule);
 
 ---
 
+## Deployment
+
+This template is container-ready and works well with most Docker-based platforms.
+
+## Contributing
+
+Thanks for your interest in contributing to **Elysia Production Template**!
+Contributions of all kinds are welcome: bug fixes, improvements, documentation, and examples.
+
+This project aims to stay **simple, production-focused, and easy to extend**, so we appreciate well-scoped and thoughtful contributions.
+
+---
+
+### How to contribute
+
+1. Fork this repository
+2. Create a new branch from `main`
+3. Make your changes
+4. Run linting and tests using `bun test`
+5. Open a pull request with clear PR description of the changes
+
+```bash
+git checkout -b my-feature
+```
+
 ## FAQ
 
 <details>
@@ -359,31 +444,6 @@ Yes. Includes rate limiting, structured logging, error handling, health checks, 
 - Set up database backups
 - Ensure HTTPS is handled by a reverse proxy or your hosting platform (nginx, Caddy, or managed TLS)
 </details>
-
-## Deployment
-
-This template is container-ready and works well with most Docker-based platforms.
-
-## Contributing
-
-Thanks for your interest in contributing to **Elysia Production Template**!
-Contributions of all kinds are welcome: bug fixes, improvements, documentation, and examples.
-
-This project aims to stay **simple, production-focused, and easy to extend**, so we appreciate well-scoped and thoughtful contributions.
-
----
-
-## How to contribute
-
-1. Fork this repository
-2. Create a new branch from `main`
-3. Make your changes
-4. Run linting and tests using `bun test`
-5. Open a pull request with clear PR description of the changes
-
-```bash
-git checkout -b my-feature
-```
 
 ## License
 
