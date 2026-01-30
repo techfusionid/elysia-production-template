@@ -46,7 +46,7 @@
 		"elysia": "^1.4.0",
 		"elysia-rate-limit": "^4.4.2",
 		"lru-cache": "^11.2.4",
-		"pino": "^9.5.0",
+		"pino": "^10.2.1",
 		"pino-pretty": "^13.0.0",
 		"postgres": "^3.4.5",
 		"resend": "^6.7.0"
