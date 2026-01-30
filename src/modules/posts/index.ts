@@ -1,5 +1,6 @@
 import { withAuth } from '@common/middleware/auth-guard';
 import { Elysia, t } from 'elysia';
+import { createPostSchema, updatePostSchema } from './schemas';
 import * as service from './service';
 
 /**
@@ -70,10 +71,7 @@ export const postsModule = withAuth(new Elysia({ prefix: '/api/posts' }))
 		},
 		{
 			auth: true, // 👈 Require login (any authenticated user)
-			body: t.Object({
-				title: t.String({ minLength: 1, maxLength: 255 }),
-				content: t.String({ minLength: 1 }),
-			}),
+			body: t.Omit(createPostSchema, ['id', 'authorId', 'createdAt', 'updatedAt']),
 			detail: {
 				tags: ['Posts'],
 				summary: 'Create post',
@@ -114,10 +112,7 @@ export const postsModule = withAuth(new Elysia({ prefix: '/api/posts' }))
 			params: t.Object({
 				id: t.String({ format: 'uuid' }),
 			}),
-			body: t.Object({
-				title: t.Optional(t.String({ minLength: 1, maxLength: 255 })),
-				content: t.Optional(t.String({ minLength: 1 })),
-			}),
+			body: t.Omit(updatePostSchema, ['id', 'authorId', 'createdAt', 'updatedAt']),
 			detail: {
 				tags: ['Posts'],
 				summary: 'Update post',
