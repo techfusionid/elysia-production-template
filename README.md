@@ -279,6 +279,25 @@ Below are the main routes exposed by the template. See `/docs` for full request/
 
 > Full API documentation available at `/docs` when running.
 
+---
+
+### Adding New Modules
+
+The `posts` module is included as a reference CRUD implementation. Feel free to remove or replace it with your own modules.
+
+To add a new module:
+
+1. Create folder: `src/modules/your-module/`
+2. Add `index.ts` (routes), `service.ts` (business logic), and optionally `schema.ts`
+3. Register in `src/app.ts`:
+
+```typescript
+import { yourModule } from "@modules/your-module";
+app.use(yourModule);
+```
+
+---
+
 ## Customization
 
 This template is designed to be configurable without hiding behavior. Below are common customization points.
@@ -360,6 +379,27 @@ Use the `auth` route option to mark endpoints as protected:
 .post("/", async ({ user }) => { ... }, { auth: true })
 ```
 
+### Validation & Schemas
+
+Uses **drizzle-typebox** to generate validation schemas from Drizzle ORM:
+
+```typescript
+// Auto-generated from Drizzle + override validation
+export const createPostSchema = createInsertSchema(posts, {
+  title: t.String({ minLength: 5, maxLength: 50 }),
+  content: t.String({ minLength: 10 }),
+});
+
+// Use in routes (omit auto-generated fields)
+body: t.Omit(createPostSchema, ['id', 'authorId', 'createdAt', 'updatedAt'])
+```
+
+When you add fields in Drizzle, they auto-include in validation. Only validation rules need manual override.
+
+[Docs](https://elysiajs.com/integrations/drizzle)
+
+---
+
 ### Custom Authorization
 
 For additional checks beyond login (e.g., ownership, roles, permissions), add logic in the route handler. The `posts` module shows an ownership check example:
@@ -375,21 +415,6 @@ For additional checks beyond login (e.g., ownership, roles, permissions), add lo
 
   // proceed...
 }, { auth: true })
-```
-
-### Adding New Modules
-
-The `posts` module is included as a reference CRUD implementation. Feel free to remove or replace it with your own modules.
-
-To add a new module:
-
-1. Create folder: `src/modules/your-module/`
-2. Add `index.ts` (routes), `service.ts` (business logic), and optionally `schema.ts`
-3. Register in `src/app.ts`:
-
-```typescript
-import { yourModule } from "@modules/your-module";
-app.use(yourModule);
 ```
 
 ---

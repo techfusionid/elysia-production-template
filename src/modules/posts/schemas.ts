@@ -1,25 +1,20 @@
+import { posts } from '@/common/db/schema';
+import { createInsertSchema, createUpdateSchema } from 'drizzle-typebox';
 import { t } from 'elysia';
 
-export const postSchema = t.Object({
-	id: t.String({ format: 'uuid' }),
-	title: t.String(),
-	content: t.String(),
-	authorId: t.String(),
-	authorName: t.Union([t.String(), t.Null()]),
-	createdAt: t.Date(),
-	updatedAt: t.Date(),
-});
+/**
+ * API validation schemas using drizzle-typebox.
+ * When you add/remove fields in Drizzle, they auto-include here.
+ *
+ * @see https://elysiajs.com/integrations/drizzle
+ */
 
-export const createPostSchema = t.Object({
+export const createPostSchema = createInsertSchema(posts, {
 	title: t.String({ minLength: 1, maxLength: 255 }),
 	content: t.String({ minLength: 1 }),
 });
 
-export const updatePostSchema = t.Object({
+export const updatePostSchema = createUpdateSchema(posts, {
 	title: t.Optional(t.String({ minLength: 1, maxLength: 255 })),
 	content: t.Optional(t.String({ minLength: 1 })),
-});
-
-export const postIdParamSchema = t.Object({
-	id: t.String({ format: 'uuid' }),
 });
